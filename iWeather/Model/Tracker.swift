@@ -9,4 +9,5 @@ import Foundation
 
 struct Tracker {
     static var mode = false  // keeps the state of appearance ( false - light, true - dark )
+    static var tracker = false
 }

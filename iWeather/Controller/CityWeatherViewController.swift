@@ -8,22 +8,21 @@
 import UIKit
 
 class CityWeatherViewController: UIViewController {
-
+    
+    
+    @IBOutlet weak var speed: UILabel!
+    @IBOutlet weak var humidity: UILabel!
+    @IBOutlet weak var temp: UILabel!
+    
+    @IBOutlet weak var visibility: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        speed.text! = String(WeatherParameters.speed) 
+        humidity.text! = String(WeatherParameters.humidity)
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @IBAction func goBackButtonPressed(_ sender: UIButton) {
+        performSegue(withIdentifier: Identifiers.goBackFromWeather, sender: self)
     }
-    */
-
 }

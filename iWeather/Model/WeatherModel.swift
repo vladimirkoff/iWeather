@@ -12,6 +12,7 @@ struct WeatherModel: Codable {
     var main: Main
     var visibility: Int
     var wind: Wind
+    var sys: Country
 }
 
 struct Weather: Codable {
@@ -27,5 +28,9 @@ struct Main: Codable {
 
 struct Wind: Codable {
     var speed: Double
+}
+
+struct Country: Codable {
+    var country: String
 }
 

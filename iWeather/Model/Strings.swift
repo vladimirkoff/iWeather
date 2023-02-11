@@ -12,6 +12,8 @@ struct Identifiers {
     static let loadingSegue = "goToLoading"
     static let weatherSegue = "goToWeather"
     static let cityCell = "CityCell"
+    static let goBackSegue = "goBackToInitial"
+    static let goBackFromWeather = "goBackFromWeather"
 }
 
 struct Urls {

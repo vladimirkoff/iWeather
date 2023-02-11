@@ -17,18 +17,20 @@ struct WeatherManager {
     var delegate: WeatherManagerDelegate?
     
     func fetchWeather(city: String) {
+        
         Urls.weatherUrl += "&q=\(city)"
         performRequest()
     }
     
     func performRequest() {
-        print(Urls.weatherUrl)
         if let url = URL(string: Urls.weatherUrl) {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { data, response, error in
                 if let e = error {
-                    print("Error occured - \(e)")
+                    print("Error performing request - \(e)")
+                    delegate?.didFail()
                 } else {
+                   
                     if let safeData = data {
                             parseJSON(data: safeData)
                     }
@@ -43,13 +45,15 @@ struct WeatherManager {
         let decoder = JSONDecoder()
         do {
             let decodedData = try decoder.decode(WeatherModel.self, from: data)
-            print(decodedData.main.humidity)
-            print(decodedData.visibility)
-            print(decodedData.main.temp)
-            print(decodedData.wind.speed)
+            WeatherParameters.country = decodedData.sys.country
+            WeatherParameters.visibility = decodedData.visibility
+            WeatherParameters.humidity = decodedData.main.humidity
+            WeatherParameters.temp = decodedData.main.temp
+            WeatherParameters.speed = decodedData.wind.speed
             delegate?.didUpdateUI()
         } catch {
-            print("Error decoding data")
+            print("Error parsing JSON - \(error)")
+            delegate?.didFail()
         }
     }
 }
