@@ -7,43 +7,36 @@
 
 import UIKit
 import CoreData
+import CoreLocation
 
-class LoadingViewController: UIViewController, WeatherManagerDelegate {
+class LoadingViewController: UIViewController {
     
+    @IBOutlet var backGround: UIView!
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var cityName: String?
     var weatherManager = WeatherManager()
     var tracker: Bool?
+    let locationManager = CLLocationManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(cityName!)
+        backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
+        locationManager.delegate = self
         weatherManager.delegate = self
-        weatherManager.fetchWeather(city: cityName!)
-    }
-    func didFail() {
-        print("ERROR")
-        DispatchQueue.main.async {
-            self.performSegue(withIdentifier: Identifiers.errorSegue, sender: self)
-        }
-    }
-    
-    func didUpdateUI() {
-        if Tracker.tracker {
-            DispatchQueue.main.async {
-                self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
-            }
+        
+        locationManager.requestWhenInUseAuthorization()
+        
+        if cityName != nil {
+            weatherManager.fetchWeather(city: cityName!)
         } else {
-            let newCity = City(context: context)
-            newCity.name = cityName
-            newCity.country = WeatherParameters.country
-            saveItems()
-            DispatchQueue.main.async {
-                self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
-            }
+            locationManager.requestLocation()
         }
     }
-    
+}
+
+//MARK: - CoreData methods
+
+extension LoadingViewController {
     func saveItems() {
         do {
             try context.save()
@@ -59,5 +52,56 @@ class LoadingViewController: UIViewController, WeatherManagerDelegate {
         } catch {
             print("ERROR loading items")
         }
+    }
+}
+
+//MARK: - WeatherManagerDelegate methods
+
+extension LoadingViewController: WeatherManagerDelegate {
+    func didFail() {
+        print("ERROR")
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: Identifiers.errorSegue, sender: self)
+        }
+    }
+    
+    func didUpdateUI() {
+        if cityName != nil {
+            if Tracker.tracker {
+                DispatchQueue.main.async {
+                    self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
+                }
+            } else {
+                let newCity = City(context: context)
+                newCity.name = cityName
+                newCity.country = WeatherParameters.country
+                saveItems()
+                DispatchQueue.main.async {
+                    self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
+                }
+            }
+        } else {
+            print("Updated")
+            self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
+        }
+          
+         
+    }
+}
+
+//MARK: - CoreLocation methods
+
+extension LoadingViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        DispatchQueue.main.async {
+            if let lon = locations.last?.coordinate.longitude , let lat = locations.last?.coordinate.latitude {
+                self.weatherManager.fetchWeatherForCurrentLocation(lon: lon, lat: lat)
+            } else {
+                print("ERROR")
+            }
+        }
+    }
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("ERROR GETTING LOCATION")
     }
 }

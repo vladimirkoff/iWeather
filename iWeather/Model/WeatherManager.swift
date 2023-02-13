@@ -17,13 +17,24 @@ struct WeatherManager {
     var delegate: WeatherManagerDelegate?
     
     func fetchWeather(city: String) {
-        
         Urls.weatherUrl += "&q=\(city)"
-        performRequest()
+        performRequest(cityName: city)
     }
     
-    func performRequest() {
-        if let url = URL(string: Urls.weatherUrl) {
+    func fetchWeatherForCurrentLocation(lon: Double, lat: Double) {
+        Urls.weatherForCurrentLocation += "lon=\(lon)&lat=\(lat)&appid=19d05a5ed37fa14c551db44956ae91aa"
+        performRequest(lon: lon, lat: lat)
+    }
+    
+    func performRequest(lon: Double? = nil, lat: Double? = nil, cityName: String? = nil) {
+        var currentUrl = ""
+        if lon == nil || lat == nil {
+            currentUrl = Urls.weatherUrl
+        } else {
+            currentUrl = Urls.weatherForCurrentLocation
+        }
+        
+        if let url = URL(string: currentUrl) {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { data, response, error in
                 if let e = error {
@@ -32,7 +43,10 @@ struct WeatherManager {
                 } else {
                    
                     if let safeData = data {
-                            parseJSON(data: safeData)
+                        DispatchQueue.main.async {
+                            parseJSON(data: safeData, cityName: cityName)
+                        }
+                            
                     }
                 }
             }
@@ -41,7 +55,7 @@ struct WeatherManager {
         }
     }
     
-    func parseJSON(data: Data) {
+    func parseJSON(data: Data, cityName: String? = nil) {
         let decoder = JSONDecoder()
         do {
             let decodedData = try decoder.decode(WeatherModel.self, from: data)
@@ -50,6 +64,10 @@ struct WeatherManager {
             WeatherParameters.humidity = decodedData.main.humidity
             WeatherParameters.temp = decodedData.main.temp
             WeatherParameters.speed = decodedData.wind.speed
+            WeatherParameters.min = decodedData.main.temp_min
+            WeatherParameters.max = decodedData.main.temp_max
+            WeatherParameters.description = decodedData.weather[0].description
+            if let city = cityName {WeatherParameters.cityName = city}
             delegate?.didUpdateUI()
         } catch {
             print("Error parsing JSON - \(error)")

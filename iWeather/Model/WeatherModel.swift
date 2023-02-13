@@ -16,7 +16,10 @@ struct WeatherModel: Codable {
 }
 
 struct Weather: Codable {
+    var id: Int
     var main: String
+    var icon: String
+    var description: String
 }
 
 struct Main: Codable {
@@ -24,6 +27,8 @@ struct Main: Codable {
     var feels_like: Double
     var pressure: Int
     var humidity: Int
+    var temp_max: Double
+    var temp_min: Double
 }
 
 struct Wind: Codable {
@@ -33,4 +38,6 @@ struct Wind: Codable {
 struct Country: Codable {
     var country: String
 }
+
+
 

@@ -9,18 +9,21 @@ import UIKit
 
 class CityWeatherViewController: UIViewController {
     
-    
-    @IBOutlet weak var speed: UILabel!
-    @IBOutlet weak var humidity: UILabel!
-    @IBOutlet weak var temp: UILabel!
-    
-    @IBOutlet weak var visibility: UILabel!
+    @IBOutlet var backGround: UIView!
+    @IBOutlet weak var cityName: UILabel!
+    @IBOutlet weak var generalTemp: UILabel!
+    @IBOutlet weak var maxAndMin: UILabel!
+    @IBOutlet weak var mainDescription: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        speed.text! = String(WeatherParameters.speed) 
-        humidity.text! = String(WeatherParameters.humidity)
+        backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
+        cityName.text! = String(WeatherParameters.cityName)
+        generalTemp.text! = String(WeatherParameters.temp)
+        mainDescription.text! = String(WeatherParameters.description)
+        maxAndMin.text! = String(WeatherParameters.max)
     }
+    
     
     @IBAction func goBackButtonPressed(_ sender: UIButton) {
         performSegue(withIdentifier: Identifiers.goBackFromWeather, sender: self)
