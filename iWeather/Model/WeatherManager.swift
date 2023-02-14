@@ -33,7 +33,7 @@ struct WeatherManager {
         } else {
             currentUrl = Urls.weatherForCurrentLocation
         }
-        
+       
         if let url = URL(string: currentUrl) {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { data, response, error in
@@ -41,7 +41,6 @@ struct WeatherManager {
                     print("Error performing request - \(e)")
                     delegate?.didFail()
                 } else {
-                   
                     if let safeData = data {
                         DispatchQueue.main.async {
                             parseJSON(data: safeData, cityName: cityName)
@@ -59,19 +58,21 @@ struct WeatherManager {
         let decoder = JSONDecoder()
         do {
             let decodedData = try decoder.decode(WeatherModel.self, from: data)
-            WeatherParameters.country = decodedData.sys.country
-            WeatherParameters.visibility = decodedData.visibility
-            WeatherParameters.humidity = decodedData.main.humidity
-            WeatherParameters.temp = decodedData.main.temp
-            WeatherParameters.speed = decodedData.wind.speed
-            WeatherParameters.min = decodedData.main.temp_min
-            WeatherParameters.max = decodedData.main.temp_max
-            WeatherParameters.description = decodedData.weather[0].description
-            if let city = cityName {WeatherParameters.cityName = city}
+            WeatherParametersForCurrent.country = decodedData.sys.country
+            WeatherParametersForCurrent.visibility = decodedData.visibility
+            WeatherParametersForCurrent.humidity = decodedData.main.humidity
+            WeatherParametersForCurrent.temp = decodedData.main.temp
+            WeatherParametersForCurrent.speed = decodedData.wind.speed
+            WeatherParametersForCurrent.min = decodedData.main.temp_min
+            WeatherParametersForCurrent.max = decodedData.main.temp_max
+            WeatherParametersForCurrent.description = decodedData.weather[0].description
+            if let city = cityName {WeatherParametersForCurrent.cityName = city} else {WeatherParametersForCurrent.cityName = decodedData.name}
             delegate?.didUpdateUI()
         } catch {
             print("Error parsing JSON - \(error)")
             delegate?.didFail()
         }
     }
+    
+   
 }

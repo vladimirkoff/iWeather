@@ -13,12 +13,12 @@ struct WeatherModel: Codable {
     var visibility: Int
     var wind: Wind
     var sys: Country
+    var name: String
 }
 
 struct Weather: Codable {
     var id: Int
     var main: String
-    var icon: String
     var description: String
 }
 
@@ -38,6 +38,18 @@ struct Wind: Codable {
 struct Country: Codable {
     var country: String
 }
+
+struct WeatherModelForFiveDays: Codable {
+    var list: [Test2]
+}
+
+struct Test2: Codable {
+    var dt_txt: String
+    var main: Main
+    var weather: [Weather]
+}
+
+
 
 
 

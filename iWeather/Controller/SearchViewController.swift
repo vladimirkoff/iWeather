@@ -20,6 +20,7 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var cityName: String?
    
     let weatherManager = WeatherManager()
+    let weatherManagerForFive = WeatherManagerForFive()
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
@@ -30,7 +31,6 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
         tableView.dataSource = self
         tableView.delegate = self
         loadItems()
-        
         Tracker.mode = defaults.bool(forKey: "mode")
         appearanceSwitcher.isOn = Tracker.mode
         backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
@@ -70,8 +70,9 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if cityName == nil {
             return
         } else {
+            weatherManagerForFive.fetchWeatherForFiveDays(city: cityName!)
             destinationVC.cityName = self.cityName
-            for city in Test.cityList {
+            for city in CityList.cityList {
             if city.name == cityName! {
                 Tracker.tracker = true
                 break
@@ -87,26 +88,26 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
 extension SearchViewController: SwipeTableViewCellDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Test.cityList.count
+        return CityList.cityList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.cityCell, for: indexPath) as! SwipeTableViewCell
-        cell.textLabel?.text = Test.cityList[indexPath.row].name
+        cell.textLabel?.text = CityList.cityList[indexPath.row].name
         cell.delegate = self
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        cityName = Test.cityList[indexPath.row].name
+        cityName = CityList.cityList[indexPath.row].name
         performSegue(withIdentifier: Identifiers.loadingSegue, sender: self)
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
         guard orientation == .right else { return nil }
         let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
-            self.context.delete(Test.cityList[indexPath.row])
-            Test.cityList.remove(at: indexPath.row)
+            self.context.delete(CityList.cityList[indexPath.row])
+            CityList.cityList.remove(at: indexPath.row)
             self.saveItems()
             tableView.reloadData()
         }
@@ -121,7 +122,7 @@ extension SearchViewController {
     func loadItems() {
         let request : NSFetchRequest<City> = City.fetchRequest()
         do {
-            Test.cityList = try context.fetch(request)
+            CityList.cityList = try context.fetch(request)
         } catch {
             print("ERROR loading items")
         }
@@ -157,4 +158,5 @@ extension SearchViewController {
         alert.addAction(action)
         present(alert, animated: true)
     }
-}
+  }
+

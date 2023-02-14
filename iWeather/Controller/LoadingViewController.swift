@@ -9,14 +9,23 @@ import UIKit
 import CoreData
 import CoreLocation
 
-class LoadingViewController: UIViewController {
+class LoadingViewController: UIViewController, WeatherManagerForFiveDelegate {
     
+    func didFailWithError() {
+        print("ERRORRR")
+    }
+    
+    func didUpdated(weather: [WeatherModelClass]) {
+        print(weather)
+    }
+
     @IBOutlet var backGround: UIView!
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var cityName: String?
     var weatherManager = WeatherManager()
     var tracker: Bool?
     let locationManager = CLLocationManager()
+    let weatherManagerForFive = WeatherManagerForFive()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +36,7 @@ class LoadingViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         
         if cityName != nil {
-            weatherManager.fetchWeather(city: cityName!)
+                self.weatherManager.fetchWeather(city: self.cityName!)
         } else {
             locationManager.requestLocation()
         }
@@ -48,7 +57,7 @@ extension LoadingViewController {
     func loadItems() {
         let request : NSFetchRequest<City> = City.fetchRequest()
         do {
-            Test.cityList = try context.fetch(request)
+            CityList.cityList = try context.fetch(request)
         } catch {
             print("ERROR loading items")
         }
@@ -74,18 +83,15 @@ extension LoadingViewController: WeatherManagerDelegate {
             } else {
                 let newCity = City(context: context)
                 newCity.name = cityName
-                newCity.country = WeatherParameters.country
+                newCity.country = WeatherParametersForCurrent.country
                 saveItems()
                 DispatchQueue.main.async {
                     self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
                 }
             }
         } else {
-            print("Updated")
             self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
         }
-          
-         
     }
 }
 
@@ -96,6 +102,7 @@ extension LoadingViewController: CLLocationManagerDelegate {
         DispatchQueue.main.async {
             if let lon = locations.last?.coordinate.longitude , let lat = locations.last?.coordinate.latitude {
                 self.weatherManager.fetchWeatherForCurrentLocation(lon: lon, lat: lat)
+                self.weatherManagerForFive.fetchWeatherForFiveDays(lon: lon, lat: lat)
             } else {
                 print("ERROR")
             }

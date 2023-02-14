@@ -80,7 +80,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="771.75572519083971" y="5.6338028169014089"/>
+            <point key="canvasLocation" x="-683" y="942"/>
         </scene>
         <!--City Weather View Controller-->
         <scene sceneID="lIX-JD-N2d">
@@ -127,6 +127,21 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="pPM-nB-fDc">
+                                <rect key="frame" x="0.0" y="298" width="393" height="266"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="WeatherCustomCell" id="Fpk-Qq-xeH">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Fpk-Qq-xeH" id="wQG-2E-roD">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Hhm-RI-vax"/>
                         <color key="backgroundColor" red="0.0" green="0.67843137249999996" blue="0.70980392160000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -138,12 +153,13 @@
                         <outlet property="generalTemp" destination="CqJ-qk-bsu" id="BLe-2e-Mwy"/>
                         <outlet property="mainDescription" destination="3Vr-4H-8JV" id="U5I-v1-S3N"/>
                         <outlet property="maxAndMin" destination="1ha-pS-oEj" id="uij-8J-JRY"/>
+                        <outlet property="tableView" destination="pPM-nB-fDc" id="fNR-Mo-pem"/>
                         <segue destination="BYZ-38-t0r" kind="presentation" identifier="goBackFromWeather" modalPresentationStyle="fullScreen" id="hJe-Fg-M6M"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ys4-Sx-A8p" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3489" y="6"/>
+            <point key="canvasLocation" x="3487.7862595419847" y="5.6338028169014089"/>
         </scene>
         <!--Loading View Controller-->
         <scene sceneID="Q6X-Ze-bfN">
@@ -177,7 +193,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Exx-FE-Wm3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2043.5114503816792" y="5.6338028169014089"/>
+            <point key="canvasLocation" x="1153" y="6"/>
         </scene>
         <!--Error View Controller-->
         <scene sceneID="NGP-ly-Ryx">
@@ -221,7 +237,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SR4-Cv-FdW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3056" y="962"/>
+            <point key="canvasLocation" x="2044" y="882"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="9Ux-qW-dtO">
@@ -239,11 +255,10 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="idS-ja-DOr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-89.312977099236633" y="5.6338028169014089"/>
+            <point key="canvasLocation" x="-682" y="-12"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="mGw-B7-tww"/>
         <segue reference="hJe-Fg-M6M"/>
     </inferredMetricsTieBreakers>
     <resources>
@@ -252,6 +267,9 @@
         <image name="location.fill" catalog="system" width="128" height="119"/>
         <image name="nosign" catalog="system" width="128" height="123"/>
         <image name="rays" catalog="system" width="128" height="123"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemPinkColor">
             <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-struct WeatherParameters {
+struct WeatherParametersForCurrent {
     static var description = ""
     static var cityName = ""
     static var humidity = 0
@@ -20,7 +20,29 @@ struct WeatherParameters {
     static var max = 0.0
 }
 
-struct Test {
+struct CityList {
     static var cityList = [City]()
 }
 
+class WeatherModelClass {
+    var time: String
+    var temp: Double
+    var icon: String
+    
+    init(time: String, temp: Double, icon: String) {
+        self.time = time
+        self.temp = temp
+        self.icon = icon
+    }
+}
+
+struct WeatherArray {
+    static var weatherArray = [WeatherModelClass]()
+    static func updateWeatherArray() {
+        weatherArray.removeAll()
+    }
+}
+
+struct DaysArray {
+    static let daysArray = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+}
