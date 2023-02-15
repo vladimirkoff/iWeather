@@ -33,6 +33,8 @@ struct WeatherManager {
         } else {
             currentUrl = Urls.weatherForCurrentLocation
         }
+        
+        print(currentUrl)
        
         if let url = URL(string: currentUrl) {
             let session = URLSession(configuration: .default)
@@ -66,6 +68,8 @@ struct WeatherManager {
             WeatherParametersForCurrent.min = decodedData.main.temp_min
             WeatherParametersForCurrent.max = decodedData.main.temp_max
             WeatherParametersForCurrent.description = decodedData.weather[0].description
+            WeatherParametersForCurrent.pressure = decodedData.main.pressure
+            WeatherParametersForCurrent.feels_like = decodedData.main.feels_like
             if let city = cityName {WeatherParametersForCurrent.cityName = city} else {WeatherParametersForCurrent.cityName = decodedData.name}
             delegate?.didUpdateUI()
         } catch {

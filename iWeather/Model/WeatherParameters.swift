@@ -18,6 +18,8 @@ struct WeatherParametersForCurrent {
     static var temp = 0.0
     static var min = 0.0
     static var max = 0.0
+    static var feels_like = 0.0
+    static var pressure = 0
 }
 
 struct CityList {
@@ -28,11 +30,13 @@ class WeatherModelClass {
     var time: String
     var temp: Double
     var icon: String
+    var day: Int
     
-    init(time: String, temp: Double, icon: String) {
+    init(time: String, temp: Double, icon: String, day: Int) {
         self.time = time
         self.temp = temp
         self.icon = icon
+        self.day = day
     }
 }
 
@@ -44,5 +48,9 @@ struct WeatherArray {
 }
 
 struct DaysArray {
-    static let daysArray = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+    static let daysArray = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+}
+
+struct Test {
+    static var day: Int?
 }

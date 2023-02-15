@@ -10,7 +10,7 @@ import CoreData
 import CoreLocation
 
 class LoadingViewController: UIViewController, WeatherManagerForFiveDelegate {
-    
+
     func didFailWithError() {
         print("ERRORRR")
     }
@@ -20,10 +20,13 @@ class LoadingViewController: UIViewController, WeatherManagerForFiveDelegate {
     }
 
     @IBOutlet var backGround: UIView!
+    
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     var cityName: String?
-    var weatherManager = WeatherManager()
     var tracker: Bool?
+    
+    var weatherManager = WeatherManager()
     let locationManager = CLLocationManager()
     let weatherManagerForFive = WeatherManagerForFive()
     

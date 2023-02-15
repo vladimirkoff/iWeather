@@ -18,6 +18,7 @@ struct Identifiers {
 }
 
 struct Urls {
+    static var urlForCurrentInfo = "https://schedule.kpi.ua/api/time/current"
     static var weatherUrlForFiveWithLocation = "api.openweathermap.org/data/2.5/forecast?"
     static var weatherUrl = "https://api.openweathermap.org/data/2.5/weather?&appid=19d05a5ed37fa14c551db44956ae91aa&units=metric"
     static func updateWeatherUrl() {

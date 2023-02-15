@@ -49,6 +49,14 @@ struct Test2: Codable {
     var weather: [Weather]
 }
 
+struct CurrentData: Codable {
+    var data: CurrentDay
+}
+
+struct CurrentDay: Codable {
+    var currentDay: Int
+}
+
 
 
 

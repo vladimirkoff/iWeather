@@ -12,6 +12,8 @@ protocol WeatherManagerForFiveDelegate {
     func didUpdated(weather: [WeatherModelClass])
 }
 
+
+
 struct WeatherManagerForFive {
     
     var delegate: WeatherManagerForFiveDelegate?
@@ -39,7 +41,7 @@ struct WeatherManagerForFive {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { data, response, error in
                 if let e = error {
-                    print("BIIIG ERROR")
+                    print("ERROR performing task - \(e)")
                 }
                 if let safeData = data {
                        parseJSONforFiveDays(data: safeData)
@@ -49,16 +51,17 @@ struct WeatherManagerForFive {
             task.resume()
         }
     }
+    
+   
     func parseJSONforFiveDays(data: Data) {
         let decoder = JSONDecoder()
         do {
             let decodedData = try decoder.decode(WeatherModelForFiveDays.self, from: data)
             let arrayOfTemps = decodedData.list
-            
-            for time in arrayOfTemps {
-                if time.dt_txt.dropFirst(11).prefix(13) == "15:00:00" {
+            for weather in arrayOfTemps {
+                if weather.dt_txt.dropFirst(11).prefix(13) == "15:00:00" {
                     var icon = ""
-                    switch time.weather[0].id {
+                    switch weather.weather[0].id {
                     case 200...232: icon = "cloud.bolt"
                     case 300...321: icon = "cloud.drizzle.fill"
                     case 500...531: icon = "cloud.rain.fill"
@@ -68,11 +71,12 @@ struct WeatherManagerForFive {
                     case 801...804: icon = "cloud.fill"
                     default: icon = ""
                     }
-                    WeatherArray.weatherArray.append(WeatherModelClass(time: time.dt_txt, temp: time.main.temp, icon: icon))
+                    WeatherArray.weatherArray.append(WeatherModelClass(time: weather.dt_txt, temp: weather.main.temp, icon: icon, day:Test.day!))
+                    print("\(WeatherArray.weatherArray[0].day) - current day")
                 }
             }
         } catch {
-            print("ERROR parsing JSONcfx")
+            print("ERROR parsing JSON - \(error)")
         }
     }
 }
