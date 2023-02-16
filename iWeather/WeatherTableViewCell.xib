@@ -35,8 +35,20 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="cloud.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Hla-Mx-fAF">
-                                <rect key="frame" x="158" y="36.666666666666657" width="54" height="30"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Hla-Mx-fAF">
+                                <rect key="frame" x="146" y="17.666666666666657" width="97" height="59"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Humidity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0dD-Tz-z7R">
+                                <rect key="frame" x="86" y="32" width="123" height="33"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ka5-12-Rkg">
+                                <rect key="frame" x="14" y="14" width="70" height="67"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
@@ -58,6 +70,8 @@
             <connections>
                 <outlet property="backGround" destination="moC-j3-uSK" id="5hP-Ut-v7B"/>
                 <outlet property="dayLabel" destination="bzE-GK-WSc" id="EgW-tG-uA2"/>
+                <outlet property="otherWeatherParametersDescription" destination="0dD-Tz-z7R" id="yyS-I7-Wwt"/>
+                <outlet property="otherWeatherParametersIcon" destination="ka5-12-Rkg" id="YP9-8c-ttp"/>
                 <outlet property="tempLabel" destination="1QZ-UL-NoK" id="bQz-Je-Jn9"/>
                 <outlet property="weatherImage" destination="Hla-Mx-fAF" id="BAD-VJ-TQh"/>
             </connections>
@@ -65,7 +79,6 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="cloud.fill" catalog="system" width="128" height="87"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -13,13 +13,12 @@ struct CurrentDayManager {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { data, response, error in
                 if let e = error {
-                    print("ERROR getting current info - \(e)")
+                    print("ERROR getting current day - \(e)")
                 }
                 if let safeData = data {
                     DispatchQueue.main.async {
                         parseJSON(data: safeData)
-                    }
-                        
+                    }    
                 }
             }
             task.resume()
@@ -29,12 +28,9 @@ struct CurrentDayManager {
         let decoder = JSONDecoder()
         do {
             let decodedData =  try decoder.decode(CurrentData.self, from: data)
-            DispatchQueue.main.async {
-                Test.day = decodedData.data.currentDay
-            }
-            
+                CurrentDayValue.day = decodedData.data.currentDay - 1
         } catch {
-           print("ERROR parsing JSON- \(error)")
+           print("ERROR parsing JSON for current day - \(error)")
         }
     }
 }

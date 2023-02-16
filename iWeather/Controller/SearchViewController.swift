@@ -17,51 +17,55 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet weak var searchField: UITextField!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet var backGround: UIView!
-    
-    
-
-    @IBAction func searchButtonPressed(_ sender: UIButton) {
-        searchWeather()
-    }
-    
-    
     @IBOutlet var tableViewBackCol: UITableView!
+    
     let defaults = UserDefaults.standard
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     var cityName: String?
+    var cityNameCopy: String?
+    
     let currentDayManager = CurrentDayManager()
     let weatherManager = WeatherManager()
     let weatherManagerForFive = WeatherManagerForFive()
     
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
+        Tracker.mode = defaults.bool(forKey: "mode")
+        tableViewBackCol.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
+        appearanceSwitcher.isOn = Tracker.mode
+        backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
+        
         DispatchQueue.main.async {
             self.currentDayManager.performRequestForCurrentInfo()
         }
+        
         searchField.delegate = self
         tableView.dataSource = self
         tableView.delegate = self
+        
         loadItems()
-        Tracker.mode = defaults.bool(forKey: "mode")
-        tableViewBackCol.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
+        
+        
       
         if Tracker.mode {
             moonImage.image = UIImage(systemName: "moon.fill")
             moonImage.tintColor = .white
-       
-//            changeTextColor(mode: Tracker.mode)
         } else {
             sunImage.image = UIImage(systemName: "sun.max.fill")
             sunImage.tintColor = .yellow
-//            changeTextColor(mode: Tracker.mode)
         }
-        appearanceSwitcher.isOn = Tracker.mode
-        backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
         
-        tableView.register(UINib(nibName: "CityCustomCell", bundle: nil), forCellReuseIdentifier: "CityCustomCell")
+        
+        tableView.register(UINib(nibName: "CityCustomCell", bundle: nil), forCellReuseIdentifier: Identifiers.cityCell)
+    }
+    
+    @IBAction func searchButtonPressed(_ sender: UIButton) {
+        searchWeather()
     }
     
     @IBAction func appearanceSwitched(_ sender: UISwitch) {
@@ -72,14 +76,11 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
             moonImage.image = UIImage(systemName: "moon.fill")
             moonImage.tintColor = .white
             sunImage.image = nil
-//            changeTextColor(mode: Tracker.mode)
         } else {
             sunImage.image = UIImage(systemName: "sun.max.fill")
             sunImage.tintColor = .yellow
             moonImage.image = nil
-//            changeTextColor(mode: Tracker.mode)
         }
-        
         defaults.set(Tracker.mode, forKey: "mode")
         backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
     }
@@ -93,10 +94,16 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if cityName == nil {
             return
         } else {
-            weatherManagerForFive.fetchWeatherForFiveDays(city: cityName!)
+            DispatchQueue.main.async {
+                self.weatherManagerForFive.fetchWeatherForFiveDays(city: self.cityName!)
+                
+            }
+            destinationVC.cityNameCopy = self.cityNameCopy
             destinationVC.cityName = self.cityName
             for city in CityList.cityList {
-            if city.name == cityName! {
+                print(cityNameCopy!)
+            if city.name == cityNameCopy! {
+                
                 Tracker.tracker = true
                 break
             } else {
@@ -115,7 +122,7 @@ extension SearchViewController: SwipeTableViewCellDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CityCustomCell", for: indexPath) as! CityCustomCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.cityCell, for: indexPath) as! CityCustomCell
         cell.backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
         cell.cityLabel?.text = CityList.cityList[indexPath.row].name
         cell.countryLabel?.text = CityList.cityList[indexPath.row].country
@@ -127,7 +134,8 @@ extension SearchViewController: SwipeTableViewCellDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        cityName = CityList.cityList[indexPath.row].name
+        cityNameCopy = CityList.cityList[indexPath.row].name!
+        cityName = CityList.cityList[indexPath.row].name?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "-", with: "%20")
         performSegue(withIdentifier: Identifiers.loadingSegue, sender: self)
     }
     
@@ -199,23 +207,25 @@ extension SearchViewController: UITextFieldDelegate {
         searchWeather()
         return true
     }
-    
+}
+
+//MARK: - SearchForWeather function
+
+extension SearchViewController {
     func searchWeather() {
         if searchField.text! == "" {
-    emptyFieldAlert()
-    return
-}
-for char in searchField.text! {   // checks if there are spaces in a String
-    if char == " " && ( searchField.text?.last == char || searchField.text?.first == char ) {
-        invalidSyntaxAlert()
+        emptyFieldAlert()
         return
-    }
-    else if Int(String(char)) != nil {   // checks if there are numbers in a string
-        invalidSyntaxAlert()
-        return
-    }
 }
-      cityName = searchField.text!
+        let cityString = searchField.text!
+        for char in cityString {   // checks if there are spaces in a String
+             if Int(String(char)) != nil {   // checks if there are numbers in a string
+                invalidSyntaxAlert()
+                return
+             }
+        }
+        cityNameCopy = cityString.replacingOccurrences(of: " ", with: "-")
+        cityName = cityString.trimmingCharacters(in: .whitespaces).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "-", with: "%20")
       performSegue(withIdentifier: Identifiers.loadingSegue, sender: self)
     }
 }

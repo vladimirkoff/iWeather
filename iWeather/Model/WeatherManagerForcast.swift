@@ -7,44 +7,31 @@
 
 import Foundation
 
-protocol WeatherManagerForFiveDelegate {
-    func didFailWithError()
-    func didUpdated(weather: [WeatherModelClass])
-}
-
-
-
 struct WeatherManagerForFive {
     
-    var delegate: WeatherManagerForFiveDelegate?
 
      func fetchWeatherForFiveDays(city: String? = nil, lon: Double? = nil, lat: Double? = nil) {
-         var tracker = true
+         var url = ""
         if let cityName = city {
-            Urls.weatherForFiveDays += "q=\(cityName)" + Identifiers.apiKey
-            tracker = true
+            Urls.weatherForcast += "q=\(cityName)" + Identifiers.apiKey
+            url = Urls.weatherForcast
         } else {
-            Urls.weatherUrlForFiveWithLocation += "lat=\(lat!)&lon=\(lon!)" + Identifiers.apiKey
-            tracker = false
+            Urls.weatherUrlForcastWithLocation += "lat=\(lat!)&lon=\(lon!)" + Identifiers.apiKey
+            url = Urls.weatherUrlForcastWithLocation
         }
-         performRequestForFiveDays(tracker: tracker)
+         performRequestForFiveDays(url: url)
     }
-    func performRequestForFiveDays(tracker: Bool) {
-        var test = ""
-        if tracker {
-            test = Urls.weatherForFiveDays
-        } else {
-            test = Urls.weatherUrlForFiveWithLocation
-        }
-        print(test)
-        if let url = URL(string: test) {
+    func performRequestForFiveDays(url: String) {
+        if let url = URL(string: url) {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { data, response, error in
                 if let e = error {
                     print("ERROR performing task - \(e)")
                 }
                 if let safeData = data {
-                       parseJSONforFiveDays(data: safeData)
+                    DispatchQueue.main.async {
+                        parseJSONforFiveDays(data: safeData)
+                    }  
                 }
             }
             Urls.updateWeatherUrl()
@@ -52,7 +39,6 @@ struct WeatherManagerForFive {
         }
     }
     
-   
     func parseJSONforFiveDays(data: Data) {
         let decoder = JSONDecoder()
         do {
@@ -71,8 +57,7 @@ struct WeatherManagerForFive {
                     case 801...804: icon = "cloud.fill"
                     default: icon = ""
                     }
-                    WeatherArray.weatherArray.append(WeatherModelClass(time: weather.dt_txt, temp: weather.main.temp, icon: icon, day:Test.day!))
-                    print("\(WeatherArray.weatherArray[0].day) - current day")
+                    WeatherArray.weatherArray.append(WeatherModelClass(time: weather.dt_txt, temp: Int(weather.main.temp), icon: icon, day:CurrentDayValue.day!))
                 }
             }
         } catch {

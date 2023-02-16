@@ -9,21 +9,14 @@ import UIKit
 import CoreData
 import CoreLocation
 
-class LoadingViewController: UIViewController, WeatherManagerForFiveDelegate {
-
-    func didFailWithError() {
-        print("ERRORRR")
-    }
-    
-    func didUpdated(weather: [WeatherModelClass]) {
-        print(weather)
-    }
+class LoadingViewController: UIViewController {
 
     @IBOutlet var backGround: UIView!
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     var cityName: String?
+    var cityNameCopy: String?
     var tracker: Bool?
     
     var weatherManager = WeatherManager()
@@ -85,7 +78,7 @@ extension LoadingViewController: WeatherManagerDelegate {
                 }
             } else {
                 let newCity = City(context: context)
-                newCity.name = cityName
+                newCity.name = cityName?.replacingOccurrences(of: "%20", with: "-")
                 newCity.country = WeatherParametersForCurrent.country
                 saveItems()
                 DispatchQueue.main.async {
@@ -93,7 +86,10 @@ extension LoadingViewController: WeatherManagerDelegate {
                 }
             }
         } else {
-            self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
+            }
+            
         }
     }
 }

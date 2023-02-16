@@ -17,7 +17,7 @@ struct WeatherManager {
     var delegate: WeatherManagerDelegate?
     
     func fetchWeather(city: String) {
-        Urls.weatherUrl += "&q=\(city)"
+        Urls.currentWeatherUrl += "&q=\(city)"
         performRequest(cityName: city)
     }
     
@@ -29,13 +29,10 @@ struct WeatherManager {
     func performRequest(lon: Double? = nil, lat: Double? = nil, cityName: String? = nil) {
         var currentUrl = ""
         if lon == nil || lat == nil {
-            currentUrl = Urls.weatherUrl
+            currentUrl = Urls.currentWeatherUrl
         } else {
             currentUrl = Urls.weatherForCurrentLocation
         }
-        
-        print(currentUrl)
-       
         if let url = URL(string: currentUrl) {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { data, response, error in
@@ -44,10 +41,7 @@ struct WeatherManager {
                     delegate?.didFail()
                 } else {
                     if let safeData = data {
-                        DispatchQueue.main.async {
                             parseJSON(data: safeData, cityName: cityName)
-                        }
-                            
                     }
                 }
             }
@@ -65,11 +59,11 @@ struct WeatherManager {
             WeatherParametersForCurrent.humidity = decodedData.main.humidity
             WeatherParametersForCurrent.temp = decodedData.main.temp
             WeatherParametersForCurrent.speed = decodedData.wind.speed
-            WeatherParametersForCurrent.min = decodedData.main.temp_min
-            WeatherParametersForCurrent.max = decodedData.main.temp_max
+            WeatherParametersForCurrent.min = Int(decodedData.main.temp_min)
+            WeatherParametersForCurrent.max = Int(decodedData.main.temp_max)
             WeatherParametersForCurrent.description = decodedData.weather[0].description
             WeatherParametersForCurrent.pressure = decodedData.main.pressure
-            WeatherParametersForCurrent.feels_like = decodedData.main.feels_like
+            WeatherParametersForCurrent.feels_like = Int(decodedData.main.feels_like)
             if let city = cityName {WeatherParametersForCurrent.cityName = city} else {WeatherParametersForCurrent.cityName = decodedData.name}
             delegate?.didUpdateUI()
         } catch {
@@ -77,6 +71,4 @@ struct WeatherManager {
             delegate?.didFail()
         }
     }
-    
-   
 }

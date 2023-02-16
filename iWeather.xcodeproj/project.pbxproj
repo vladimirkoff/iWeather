@@ -27,7 +27,7 @@
 		85C5288529965D92009C7FCF /* CityWeatherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C5288429965D92009C7FCF /* CityWeatherViewController.swift */; };
 		85C5288729965E64009C7FCF /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C5288629965E64009C7FCF /* Tracker.swift */; };
 		85C5288B2996665B009C7FCF /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C5288A2996665B009C7FCF /* SearchViewController.swift */; };
-		85DCE8C8299B83BF0099359F /* WeatherManagerForFive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85DCE8C7299B83BF0099359F /* WeatherManagerForFive.swift */; };
+		85DCE8C8299B83BF0099359F /* WeatherManagerForcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85DCE8C7299B83BF0099359F /* WeatherManagerForcast.swift */; };
 		FEBCDF5C42DC7A6B9AC35C26 /* Pods_iWeather.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A022B617F9386744A5FA076 /* Pods_iWeather.framework */; };
 /* End PBXBuildFile section */
 
@@ -55,7 +55,7 @@
 		85C5288429965D92009C7FCF /* CityWeatherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityWeatherViewController.swift; sourceTree = "<group>"; };
 		85C5288629965E64009C7FCF /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		85C5288A2996665B009C7FCF /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
-		85DCE8C7299B83BF0099359F /* WeatherManagerForFive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherManagerForFive.swift; sourceTree = "<group>"; };
+		85DCE8C7299B83BF0099359F /* WeatherManagerForcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherManagerForcast.swift; sourceTree = "<group>"; };
 		9A022B617F9386744A5FA076 /* Pods_iWeather.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iWeather.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8F883A08EE4365AA6B7EFF /* Pods-iWeather.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iWeather.release.xcconfig"; path = "Target Support Files/Pods-iWeather/Pods-iWeather.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -157,10 +157,10 @@
 				85C5288629965E64009C7FCF /* Tracker.swift */,
 				8528C729299676D20068C648 /* Strings.swift */,
 				8528C72B299678CD0068C648 /* WeatherManager.swift */,
+				85C3A32F299CD691007BE540 /* CurrentDayManager.swift */,
+				85DCE8C7299B83BF0099359F /* WeatherManagerForcast.swift */,
 				8528C72D29967AE50068C648 /* WeatherModel.swift */,
 				8528C72F299781600068C648 /* WeatherParameters.swift */,
-				85DCE8C7299B83BF0099359F /* WeatherManagerForFive.swift */,
-				85C3A32F299CD691007BE540 /* CurrentDayManager.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -299,7 +299,7 @@
 				8565A52B299D18A30026E653 /* CityCustomCell.swift in Sources */,
 				8528C730299781600068C648 /* WeatherParameters.swift in Sources */,
 				8528C72C299678CD0068C648 /* WeatherManager.swift in Sources */,
-				85DCE8C8299B83BF0099359F /* WeatherManagerForFive.swift in Sources */,
+				85DCE8C8299B83BF0099359F /* WeatherManagerForcast.swift in Sources */,
 				85C5288329965D87009C7FCF /* ErrorViewController.swift in Sources */,
 				85C5288B2996665B009C7FCF /* SearchViewController.swift in Sources */,
 				85C5288129965D7B009C7FCF /* LoadingViewController.swift in Sources */,

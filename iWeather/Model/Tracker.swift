@@ -10,5 +10,4 @@ import Foundation
 struct Tracker {
     static var mode = false  // keeps the state of appearance ( false - light, true - dark )
     static var tracker = false   // keeps track of wether the city has already been added to the DB
-    static var count = WeatherArray.weatherArray[0].day // keeps track of the index of the day in CityWEatherViewController TableView
 }
