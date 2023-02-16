@@ -40,10 +40,10 @@ struct Country: Codable {
 }
 
 struct WeatherModelForFiveDays: Codable {
-    var list: [Test2]
+    var list: [DayInList]
 }
 
-struct Test2: Codable {
+struct DayInList: Codable {
     var dt_txt: String
     var main: Main
     var weather: [Weather]

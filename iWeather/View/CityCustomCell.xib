@@ -22,15 +22,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="342" height="63"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Kyiv" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B0G-4f-yEQ">
-                                <rect key="frame" x="20" y="20" width="148" height="23"/>
+                                <rect key="frame" x="20" y="20" width="235" height="23"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="25"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="UA" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eZJ-9S-zzP">
-                                <rect key="frame" x="297" y="15" width="37" height="33"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="UA" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eZJ-9S-zzP">
+                                <rect key="frame" x="290.66666666666669" y="15" width="36.333333333333314" height="33"/>
                                 <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="25"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -39,6 +38,8 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="342" id="PpP-PV-gsB"/>
+                            <constraint firstAttribute="trailing" secondItem="eZJ-9S-zzP" secondAttribute="trailing" constant="15" id="U07-3f-9PO"/>
+                            <constraint firstAttribute="bottom" secondItem="eZJ-9S-zzP" secondAttribute="bottom" constant="15" id="Y3p-bT-Nec"/>
                             <constraint firstAttribute="height" constant="63" id="iGB-UA-f94"/>
                         </constraints>
                     </view>

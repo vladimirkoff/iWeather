@@ -28,12 +28,19 @@ class LoadingViewController: UIViewController {
         backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
         locationManager.delegate = self
         weatherManager.delegate = self
-        
-        locationManager.requestWhenInUseAuthorization()
+        DispatchQueue.main.async {
+            self.locationManager.requestWhenInUseAuthorization()
+
+        }
         
         if cityName != nil {
                 self.weatherManager.fetchWeather(city: self.cityName!)
-        } else {
+        };
+        if let lat = LonAndLat.lat, let lon = LonAndLat.lon {
+            self.weatherManager.fetchWeatherForCurrentLocation(lon: lon, lat: lat)
+            self.weatherManagerForFive.fetchWeatherForForcast(lon: lon, lat: lat)
+        }
+        else {
             locationManager.requestLocation()
         }
     }
@@ -101,7 +108,9 @@ extension LoadingViewController: CLLocationManagerDelegate {
         DispatchQueue.main.async {
             if let lon = locations.last?.coordinate.longitude , let lat = locations.last?.coordinate.latitude {
                 self.weatherManager.fetchWeatherForCurrentLocation(lon: lon, lat: lat)
-                self.weatherManagerForFive.fetchWeatherForFiveDays(lon: lon, lat: lat)
+                self.weatherManagerForFive.fetchWeatherForForcast(lon: lon, lat: lat)
+                LonAndLat.lat = lat
+                LonAndLat.lon = lon
             } else {
                 print("ERROR")
             }

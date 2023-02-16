@@ -95,13 +95,12 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
             return
         } else {
             DispatchQueue.main.async {
-                self.weatherManagerForFive.fetchWeatherForFiveDays(city: self.cityName!)
+                self.weatherManagerForFive.fetchWeatherForForcast(city: self.cityName!)
                 
             }
             destinationVC.cityNameCopy = self.cityNameCopy
             destinationVC.cityName = self.cityName
             for city in CityList.cityList {
-                print(cityNameCopy!)
             if city.name == cityNameCopy! {
                 
                 Tracker.tracker = true
@@ -218,8 +217,8 @@ extension SearchViewController {
         return
 }
         let cityString = searchField.text!
-        for char in cityString {   // checks if there are spaces in a String
-             if Int(String(char)) != nil {   // checks if there are numbers in a string
+        for char in cityString {  
+             if Int(String(char)) != nil {
                 invalidSyntaxAlert()
                 return
              }

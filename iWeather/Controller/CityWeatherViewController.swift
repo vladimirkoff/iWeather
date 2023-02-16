@@ -50,43 +50,46 @@ class CityWeatherViewController: UIViewController {
 //MARK: - TableView methods
 
 extension CityWeatherViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
         let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.weatherCell, for: indexPath) as! WeatherTableViewCell
-        print(indexPath.row)
         cell.dayLabel.textColor = .white
         cell.tempLabel.textColor = .white
-        cell.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
-        if indexPath.row == 5 {
-            cell.dayLabel.text = ""
-            cell.otherWeatherParametersDescription.textColor = .white
-            cell.otherWeatherParametersDescription.text = "Humidity"
-            cell.otherWeatherParametersIcon.image = UIImage(systemName: "humidity.fill")
-            cell.tempLabel.text = String(WeatherParametersForCurrent.humidity)
+        switch indexPath.row {
+        case 0:
+            cell.dayLabel.text = DaysArray.daysArray[Tracker.count]
+            Tracker.count += 1
+        case 1:
+            cell.dayLabel.text = DaysArray.daysArray[Tracker.count]
+            Tracker.count += 1
+        case 2:
+            cell.dayLabel.text = DaysArray.daysArray[Tracker.count]
+            Tracker.count += 1
+        case 3:
+            cell.dayLabel.text = DaysArray.daysArray[Tracker.count]
+            Tracker.count += 1
+        case 4:
+            cell.dayLabel.text = DaysArray.daysArray[Tracker.count]
+            Tracker.count += 1
+        default:
+            cell.dayLabel.text = DaysArray.daysArray[Tracker.count]
+        }
+         if indexPath.row == 5 {
+            createCellForAdditionalParameters(cell: cell, imageName: "humidity.fill", description: "Humidity")
+            cell.tempLabel.text = "\(WeatherParametersForCurrent.humidity)%"
         } else if indexPath.row == 6 {
-            cell.dayLabel.text = ""
-            cell.otherWeatherParametersDescription.textColor = .white
-            cell.otherWeatherParametersDescription.text = "Visibility"
-            cell.otherWeatherParametersIcon.image = UIImage(systemName: "eye.fill")
-            cell.tempLabel.text = String(WeatherParametersForCurrent.visibility)
+            createCellForAdditionalParameters(cell: cell, imageName: "eye.fill", description: "Visibility")
+            cell.tempLabel.text = "\(WeatherParametersForCurrent.visibility)m"
         } else if indexPath.row == 7 {
-            cell.dayLabel.text = ""
-            cell.otherWeatherParametersDescription.textColor = .white
-            cell.otherWeatherParametersDescription.text = "Feels like"
-            cell.otherWeatherParametersIcon.image = UIImage(systemName: "thermometer.low")
-            cell.tempLabel.text = String(WeatherParametersForCurrent.feels_like)
+            createCellForAdditionalParameters(cell: cell, imageName: "thermometer.low", description: "Feels like")
+            cell.tempLabel.text = "\(WeatherParametersForCurrent.feels_like)°"
         } else if indexPath.row == 8 {
-            cell.dayLabel.text = ""
-            cell.otherWeatherParametersDescription.textColor = .white
-            cell.otherWeatherParametersDescription.text = "Pressure"
-            cell.otherWeatherParametersIcon.image = UIImage(systemName: "speedometer")
-            cell.tempLabel.text = String(WeatherParametersForCurrent.pressure)
+            createCellForAdditionalParameters(cell: cell, imageName: "wind", description: "Wind speed")
+            cell.tempLabel.text = "\(WeatherParametersForCurrent.speed)km/h"
         }
         else {
             cell.otherWeatherParametersDescription.text = ""
-            cell.dayLabel.text = "Day"
             DispatchQueue.main.async {
-                
                 cell.tempLabel.text = "\(WeatherArray.weatherArray[indexPath.row].temp)°"
                 cell.weatherImage.image = UIImage(systemName: WeatherArray.weatherArray[indexPath.row].icon)
             }
@@ -95,6 +98,14 @@ extension CityWeatherViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return WeatherArray.weatherArray.count + 4
+        return 9
     }
+    
+    func createCellForAdditionalParameters(cell: WeatherTableViewCell, imageName: String, description: String) {
+        cell.dayLabel.text = ""
+        cell.otherWeatherParametersDescription.textColor = .white
+        cell.otherWeatherParametersDescription.text = description
+        cell.otherWeatherParametersIcon.image = UIImage(systemName: imageName)
+    }
+    
 }

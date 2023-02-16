@@ -54,3 +54,8 @@ struct DaysArray {
 struct CurrentDayValue {
     static var day: Int?
 }
+
+struct LonAndLat {
+    static var lon: Double?
+    static var lat: Double?
+}
