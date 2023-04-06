@@ -8,12 +8,13 @@
 import Foundation
 
 struct CurrentDayManager {
-    func performRequestForCurrentInfo() -> Void {
+    func performRequestForCurrentInfo() {
         if let url = URL(string: Urls.urlForCurrentInfo) {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { data, response, error in
                 if let e = error {
                     print("ERROR getting current day - \(e)")
+                    return
                 }
                 if let safeData = data {
                     DispatchQueue.main.async {

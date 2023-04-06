@@ -32,7 +32,6 @@ struct WeatherManager {
             currentUrl = Urls.currentWeatherUrl
         } else {
             currentUrl = Urls.weatherForCurrentLocation
-            print(currentUrl)
         }
         if let url = URL(string: currentUrl) {
             let session = URLSession(configuration: .default)

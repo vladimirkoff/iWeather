@@ -8,12 +8,13 @@
 import UIKit
 
 class CityWeatherViewController: UIViewController {
+    //MARK: - Properties
     
     @IBOutlet var tableViewBackCol: UITableView!
     @IBOutlet var backGround: UIView!
     @IBOutlet weak var cityName: UILabel!
     @IBOutlet weak var generalTemp: UILabel!
-
+    
     @IBOutlet var backButton: UIButton!
     @IBOutlet var minLabel: UILabel!
     @IBOutlet var maxLabel: UILabel!
@@ -22,24 +23,37 @@ class CityWeatherViewController: UIViewController {
     
     let weatherManager = WeatherManager()
     
+    //MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureUI()
+        configureTableView()
+    }
+    
+    //MARK: - Helpers
+    
+    func configureUI() {
         backButton.setTitle("", for: .normal)
         
         tableViewBackCol.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
         backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
-        
-        tableView.delegate = self
-        tableView.dataSource = self
         
         cityName.text! = String(WeatherParametersForCurrent.cityName.replacingOccurrences(of: "%20", with: "-"))
         generalTemp.text! = "\(Int(WeatherParametersForCurrent.temp))°"
         mainDescription.text! = String(WeatherParametersForCurrent.description)
         maxLabel.text! = "H:\(WeatherParametersForCurrent.max)"
         minLabel.text! = "L:\(WeatherParametersForCurrent.min)"
+    }
+    
+    func configureTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
         
         tableView.register(UINib(nibName: "WeatherTableViewCell", bundle: nil), forCellReuseIdentifier: Identifiers.weatherCell)
     }
+    
+    //MARK: - Actions
     
     @IBAction func goBackButtonPressed(_ sender: UIButton) {
         WeatherArray.updateWeatherArray()
@@ -74,7 +88,7 @@ extension CityWeatherViewController: UITableViewDelegate, UITableViewDataSource 
         default:
             cell.dayLabel.text = DaysArray.daysArray[Tracker.count]
         }
-         if indexPath.row == 5 {
+        if indexPath.row == 5 {
             createCellForAdditionalParameters(cell: cell, imageName: "humidity.fill", description: "Humidity")
             cell.tempLabel.text = "\(WeatherParametersForCurrent.humidity)%"
         } else if indexPath.row == 6 {
@@ -107,5 +121,4 @@ extension CityWeatherViewController: UITableViewDelegate, UITableViewDataSource 
         cell.otherWeatherParametersDescription.text = description
         cell.otherWeatherParametersIcon.image = UIImage(systemName: imageName)
     }
-    
 }

@@ -71,7 +71,6 @@ extension LoadingViewController {
 
 extension LoadingViewController: WeatherManagerDelegate {
     func didFail() {
-        print("ERROR")
         DispatchQueue.main.async {
             self.performSegue(withIdentifier: Identifiers.errorSegue, sender: self)
         }

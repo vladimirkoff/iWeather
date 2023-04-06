@@ -9,8 +9,9 @@ import UIKit
 import CoreData
 import SwipeCellKit
 
-class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SearchViewController: UIViewController {
     
+    @IBOutlet weak var searchButton: UIButton!
     @IBOutlet var moonImage: UIImageView!
     @IBOutlet var sunImage: UIImageView!
     @IBOutlet weak var appearanceSwitcher: UISwitch!
@@ -30,28 +31,28 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
     let weatherManagerForFive = WeatherManagerForFive()
     
     
-    
+    //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        currentDayManager.performRequestForCurrentInfo()
+        loadItems()
+        configureUI()
+        configureTableView()
+    }
+    
+    //MARK: - Helpers
+    
+    func configureUI() {
+        searchField.delegate = self
+        searchButton.setTitle("", for: .normal)
         
         Tracker.mode = defaults.bool(forKey: "mode")
         tableViewBackCol.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
         appearanceSwitcher.isOn = Tracker.mode
         backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
         
-        DispatchQueue.main.async {
-            self.currentDayManager.performRequestForCurrentInfo()
-        }
         
-        searchField.delegate = self
-        tableView.dataSource = self
-        tableView.delegate = self
-        
-        loadItems()
-        
-        
-      
         if Tracker.mode {
             moonImage.image = UIImage(systemName: "moon.fill")
             moonImage.tintColor = .white
@@ -60,9 +61,19 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
             sunImage.tintColor = .yellow
         }
         
-        
+    }
+    
+    func configureTableView() {
+        tableView.dataSource = self
+        tableView.delegate = self
         tableView.register(UINib(nibName: "CityCustomCell", bundle: nil), forCellReuseIdentifier: Identifiers.cityCell)
     }
+    
+    //MARK: - API
+    
+    
+    
+    //MARK: - Actions
     
     @IBAction func searchButtonPressed(_ sender: UIButton) {
         searchWeather()
@@ -89,33 +100,31 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
         performSegue(withIdentifier: Identifiers.loadingSegue, sender: self)
     }
     
+    //MARK: - Segue
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destinationVC = segue.destination as! LoadingViewController
         if cityName == nil {
             return
         } else {
-            DispatchQueue.main.async {
-                self.weatherManagerForFive.fetchWeatherForForcast(city: self.cityName!)
-                
-            }
-            destinationVC.cityNameCopy = self.cityNameCopy
-            destinationVC.cityName = self.cityName
+            self.weatherManagerForFive.fetchWeatherForForcast(city: cityName!)
+            destinationVC.cityNameCopy = cityNameCopy
+            destinationVC.cityName = cityName
             for city in CityList.cityList {
-            if city.name == cityNameCopy! {
-                
-                Tracker.tracker = true
-                break
-            } else {
-                Tracker.tracker = false
+                if city.name == cityNameCopy! {
+                    Tracker.tracker = true
+                    break
+                } else {
+                    Tracker.tracker = false
+                }
             }
         }
     }
-  }
 }
 
 //MARK: - UITableView methods
 
-extension SearchViewController: SwipeTableViewCellDelegate {
+extension SearchViewController: SwipeTableViewCellDelegate, UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return CityList.cityList.count
     }
@@ -148,9 +157,9 @@ extension SearchViewController: SwipeTableViewCellDelegate {
         guard orientation == .right else { return nil }
         
         let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
-        self.context.delete(CityList.cityList[indexPath.row])
-        CityList.cityList.remove(at: indexPath.row)
-        self.saveItems()
+            self.context.delete(CityList.cityList[indexPath.row])
+            CityList.cityList.remove(at: indexPath.row)
+            self.saveItems()
         }
         deleteAction.image = UIImage(named: "trash")
         return [deleteAction]
@@ -199,7 +208,7 @@ extension SearchViewController {
         alert.addAction(action)
         present(alert, animated: true)
     }
-  }
+}
 
 extension SearchViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -213,19 +222,19 @@ extension SearchViewController: UITextFieldDelegate {
 extension SearchViewController {
     func searchWeather() {
         if searchField.text! == "" {
-        emptyFieldAlert()
-        return
-}
+            emptyFieldAlert()
+            return
+        }
         let cityString = searchField.text!
-        for char in cityString {  
-             if Int(String(char)) != nil {
+        for char in cityString {
+            if Int(String(char)) != nil {
                 invalidSyntaxAlert()
                 return
-             }
+            }
         }
         cityNameCopy = cityString.replacingOccurrences(of: " ", with: "-")
         cityName = cityString.trimmingCharacters(in: .whitespaces).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "-", with: "%20")
-      performSegue(withIdentifier: Identifiers.loadingSegue, sender: self)
+        performSegue(withIdentifier: Identifiers.loadingSegue, sender: self)
     }
 }
 

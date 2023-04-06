@@ -9,8 +9,8 @@ import Foundation
 
 struct WeatherManagerForFive {
     
-     func fetchWeatherForForcast(city: String? = nil, lon: Double? = nil, lat: Double? = nil) {
-         var url = ""
+    func fetchWeatherForForcast(city: String? = nil, lon: Double? = nil, lat: Double? = nil) {
+        var url = ""
         if let cityName = city {
             Urls.weatherForcast += "q=\(cityName)" + Identifiers.apiKey
             url = Urls.weatherForcast
@@ -18,13 +18,10 @@ struct WeatherManagerForFive {
             Urls.weatherUrlForcastWithLocation += "lat=\(lat!)&lon=\(lon!)" + Identifiers.apiKey
             url = Urls.weatherUrlForcastWithLocation
         }
-         DispatchQueue.main.async {
-             performRequestForForcast(url: url)
-         }
+        performRequestForForcast(url: url)
     }
     
     func performRequestForForcast(url: String) {
-        print(url)
         if let url = URL(string: url) {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { data, response, error in
@@ -35,8 +32,8 @@ struct WeatherManagerForFive {
                     DispatchQueue.main.async {
                         parseJSONforForcasts(data: safeData)
                     }
-                    }
                 }
+            }
             
             Urls.updateWeatherUrl()
             task.resume()
