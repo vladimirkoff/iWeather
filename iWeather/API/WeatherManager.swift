@@ -38,7 +38,9 @@ struct WeatherManager {
             let task = session.dataTask(with: url) { data, response, error in
                 if let e = error {
                     print("Error performing request - \(e)")
-                    delegate?.didFail()
+                    DispatchQueue.main.async {
+                        self.delegate?.didFail()
+                    }
                 } else {
                     if let safeData = data {
                             parseJSON(data: safeData, cityName: cityName)
@@ -65,10 +67,15 @@ struct WeatherManager {
             WeatherParametersForCurrent.pressure = decodedData.main.pressure
             WeatherParametersForCurrent.feels_like = Int(decodedData.main.feels_like)
             if let city = cityName {WeatherParametersForCurrent.cityName = city} else {WeatherParametersForCurrent.cityName = decodedData.name}
-            delegate?.didUpdateUI()
+            DispatchQueue.main.async {
+                self.delegate?.didUpdateUI()
+            }
+            
         } catch {
             print("Error parsing JSON - \(error)")
-            delegate?.didFail()
+            DispatchQueue.main.async {
+                self.delegate?.didFail()
+            }
         }
     }
 }

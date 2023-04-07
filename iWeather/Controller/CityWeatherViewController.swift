@@ -103,10 +103,9 @@ extension CityWeatherViewController: UITableViewDelegate, UITableViewDataSource 
         }
         else {
             cell.otherWeatherParametersDescription.text = ""
-            DispatchQueue.main.async {
-                cell.tempLabel.text = "\(WeatherArray.weatherArray[indexPath.row].temp)°"
-                cell.weatherImage.image = UIImage(systemName: WeatherArray.weatherArray[indexPath.row].icon)
-            }
+            cell.tempLabel.text = "\(WeatherArray.weatherArray[indexPath.row].temp)°"
+            cell.weatherImage.image = UIImage(systemName: WeatherArray.weatherArray[indexPath.row].icon)
+            
         }
         return cell
     }

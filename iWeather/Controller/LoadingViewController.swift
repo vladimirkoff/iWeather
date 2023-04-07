@@ -10,7 +10,7 @@ import CoreData
 import CoreLocation
 
 class LoadingViewController: UIViewController {
-
+    
     @IBOutlet var backGround: UIView!
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -30,11 +30,10 @@ class LoadingViewController: UIViewController {
         weatherManager.delegate = self
         DispatchQueue.main.async {
             self.locationManager.requestWhenInUseAuthorization()
-
         }
         
         if cityName != nil {
-                self.weatherManager.fetchWeather(city: self.cityName!)
+            self.weatherManager.fetchWeather(city: self.cityName!)
         };
         if let lat = LonAndLat.lat, let lon = LonAndLat.lon {
             self.weatherManager.fetchWeatherForCurrentLocation(lon: lon, lat: lat)
@@ -71,30 +70,29 @@ extension LoadingViewController {
 
 extension LoadingViewController: WeatherManagerDelegate {
     func didFail() {
-        DispatchQueue.main.async {
-            self.performSegue(withIdentifier: Identifiers.errorSegue, sender: self)
-        }
+        self.performSegue(withIdentifier: Identifiers.errorSegue, sender: self)
+        
     }
     
     func didUpdateUI() {
         if cityName != nil {
             if Tracker.tracker {
-                DispatchQueue.main.async {
-                    self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
-                }
+                
+                self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
+                
             } else {
                 let newCity = City(context: context)
                 newCity.name = cityName?.replacingOccurrences(of: "%20", with: "-")
                 newCity.country = WeatherParametersForCurrent.country
                 saveItems()
-                DispatchQueue.main.async {
-                    self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
-                }
+                
+                self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
+                
             }
         } else {
-            DispatchQueue.main.async {
-                self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
-            }
+            
+            self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
+            
             
         }
     }
