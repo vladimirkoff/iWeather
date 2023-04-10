@@ -108,6 +108,8 @@ class SearchViewController: UIViewController {
             return
         } else {
             self.weatherManagerForFive.fetchWeatherForForcast(city: cityName!)
+            print(cityNameCopy)
+            print(cityName)
             destinationVC.cityNameCopy = cityNameCopy
             destinationVC.cityName = cityName
             for city in CityList.cityList {
@@ -166,7 +168,7 @@ extension SearchViewController: SwipeTableViewCellDelegate, UITableViewDelegate,
     }
 }
 
-//MARK: - CoreData methods
+//MARK: - CoreData
 
 extension SearchViewController {
     func loadItems() {

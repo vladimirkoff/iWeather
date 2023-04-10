@@ -23,7 +23,10 @@ class LoadingViewController: UIViewController {
     let locationManager = CLLocationManager()
     let weatherManagerForFive = WeatherManagerForFive()
     
+    var params: WeatherParametersForCurrent?
+    
     override func viewDidLoad() {
+        WeatherParametersForCurrent.delegate = self
         super.viewDidLoad()
         backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
         locationManager.delegate = self
@@ -71,30 +74,6 @@ extension LoadingViewController {
 extension LoadingViewController: WeatherManagerDelegate {
     func didFail() {
         self.performSegue(withIdentifier: Identifiers.errorSegue, sender: self)
-        
-    }
-    
-    func didUpdateUI() {
-        if cityName != nil {
-            if Tracker.tracker {
-                
-                self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
-                
-            } else {
-                let newCity = City(context: context)
-                newCity.name = cityName?.replacingOccurrences(of: "%20", with: "-")
-                newCity.country = WeatherParametersForCurrent.country
-                saveItems()
-                
-                self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
-                
-            }
-        } else {
-            
-            self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
-            
-            
-        }
     }
 }
 
@@ -115,5 +94,31 @@ extension LoadingViewController: CLLocationManagerDelegate {
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("ERROR GETTING LOCATION")
+    }
+    
+}
+
+extension LoadingViewController: WeatherParametersDelegate {
+    func hideLoading(params: WeatherParametersForCurrent) {
+        self.params = params
+        if cityName != nil {
+            if Tracker.tracker {
+                self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
+            } else {
+                let newCity = City(context: context)
+                newCity.name = cityName?.replacingOccurrences(of: "%20", with: "-")
+                newCity.country = params.country
+                saveItems()
+                self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
+            }
+        } else {
+            self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as! CityWeatherViewController
+        destinationVC.params = params
+        destinationVC.cityname = cityNameCopy
     }
 }

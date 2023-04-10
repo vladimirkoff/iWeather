@@ -8,18 +8,41 @@
 import Foundation
 import CoreData
 
+protocol WeatherParametersDelegate {
+    func hideLoading(params: WeatherParametersForCurrent)
+}
+
 struct WeatherParametersForCurrent {
-    static var description = ""
-    static var cityName = ""
-    static var humidity = 0
-    static var visibility = 0
-    static var country = ""
-    static var speed = 0.0
-    static var temp = 0.0
-    static var min = 0
-    static var max = 0
-    static var feels_like = 0
-    static var pressure = 0
+    
+    static var delegate: WeatherParametersDelegate?
+    
+    var description: String
+    var cityName: String
+    var humidity: Int
+    var visibility: Int
+    var country: String
+    var speed: Double
+    var temp: Double
+    var min: Int
+    var max: Int
+    var feels_like: Int
+    var pressure: Int
+    
+    init(description: String, cityName: String, humidity: Int, visibility: Int, country: String, speed: Double, temp: Double, min: Int, max: Int, feels_like: Int, pressure: Int) {
+        self.description = description
+        self.cityName = cityName
+        self.humidity = humidity
+        self.visibility = visibility
+        self.country = country
+        self.speed = speed
+        self.temp = temp
+        self.min = min
+        self.max = max
+        self.feels_like = feels_like
+        self.pressure = pressure
+        
+        WeatherParametersForCurrent.delegate?.hideLoading(params: self)
+    }
 }
 
 struct CityList {

@@ -9,7 +9,6 @@ import Foundation
 
 protocol WeatherManagerDelegate {
     func didFail()
-    func didUpdateUI()
 }
 
 struct WeatherManager {
@@ -28,11 +27,9 @@ struct WeatherManager {
     
     func performRequest(lon: Double? = nil, lat: Double? = nil, cityName: String? = nil) {
         var currentUrl = ""
-        if lon == nil || lat == nil {
-            currentUrl = Urls.currentWeatherUrl
-        } else {
-            currentUrl = Urls.weatherForCurrentLocation
-        }
+        
+        currentUrl = cityName == nil ? Urls.weatherForCurrentLocation : Urls.currentWeatherUrl
+        
         if let url = URL(string: currentUrl) {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { data, response, error in
@@ -41,9 +38,10 @@ struct WeatherManager {
                     DispatchQueue.main.async {
                         self.delegate?.didFail()
                     }
+                    return
                 } else {
                     if let safeData = data {
-                            parseJSON(data: safeData, cityName: cityName)
+                        parseJSON(data: safeData, cityName: cityName)
                     }
                 }
             }
@@ -54,21 +52,20 @@ struct WeatherManager {
     
     func parseJSON(data: Data, cityName: String? = nil) {
         let decoder = JSONDecoder()
+ 
         do {
             let decodedData = try decoder.decode(WeatherModel.self, from: data)
-            WeatherParametersForCurrent.country = decodedData.sys.country
-            WeatherParametersForCurrent.visibility = decodedData.visibility
-            WeatherParametersForCurrent.humidity = decodedData.main.humidity
-            WeatherParametersForCurrent.temp = decodedData.main.temp
-            WeatherParametersForCurrent.speed = decodedData.wind.speed
-            WeatherParametersForCurrent.min = Int(decodedData.main.temp_min)
-            WeatherParametersForCurrent.max = Int(decodedData.main.temp_max)
-            WeatherParametersForCurrent.description = decodedData.weather[0].description
-            WeatherParametersForCurrent.pressure = decodedData.main.pressure
-            WeatherParametersForCurrent.feels_like = Int(decodedData.main.feels_like)
-            if let city = cityName {WeatherParametersForCurrent.cityName = city} else {WeatherParametersForCurrent.cityName = decodedData.name}
+            var city = ""
+            if let cityN = cityName {
+               city = cityN
+                
+            } else {
+                city = decodedData.name
+            }
+           
+        
             DispatchQueue.main.async {
-                self.delegate?.didUpdateUI()
+                let weatherParameters = WeatherParametersForCurrent(description: decodedData.weather[0].description, cityName: city, humidity: decodedData.main.humidity, visibility: decodedData.visibility, country: decodedData.sys.country, speed: decodedData.wind.speed, temp: decodedData.main.temp, min: Int(decodedData.main.temp_min), max: Int(decodedData.main.temp_max), feels_like: Int(decodedData.main.feels_like), pressure: decodedData.main.pressure)
             }
             
         } catch {
