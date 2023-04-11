@@ -9,52 +9,55 @@ import Foundation
 
 struct WeatherManagerForFive {
     
-    static func fetchWeatherForForcast(city: String? = nil, lon: Double? = nil, lat: Double? = nil) {
+    static func fetchWeatherForecast(city: String? = nil, lon: Double? = nil, lat: Double? = nil, completion: @escaping([WeatherDayModel]) -> ()) {
         
-        var url = ""
-        url = city == nil ?
-        Urls.weatherUrlForcastWithLocation + "lat=\(lat!)&lon=\(lon!)" + Identifiers.apiKey :
-        Urls.weatherForcast + "q=\(city!)" + Identifiers.apiKey
+        let url = configureURL(city: city, lon: lon, lat: lat )
         
-        performRequestForForcast(url: url)
-    }
-    
-    static func performRequestForForcast(url: String) {
-        if let url = URL(string: url) {
-            let session = URLSession(configuration: .default)
-            let task = session.dataTask(with: url) { data, response, error in
+        if let url = url {
+            
+            URLSession.shared.dataTask(with: url) { data, response, error in
                 if let e = error {
                     print("ERROR performing task - \(e)")
+                    return
                 }
                 if let safeData = data {
+                    var weatherArray = [WeatherDayModel]()
                     DispatchQueue.main.async {
-                        parseJSONforForcasts(data: safeData)
+                        do {
+                            let decodedData = try JSONDecoder().decode(WeatherModelForFiveDays.self, from: safeData)
+                            let arrayOfTemps = decodedData.list
+                            for weather in arrayOfTemps {
+                                if weather.dt_txt.dropFirst(11).prefix(13) == "15:00:00" {
+                                    let day = getDayOfWeek(date: String(weather.dt_txt.dropFirst(0).prefix(10)))
+                                    let icon = chooseIconForWeather(id: weather.weather[0].id)
+                                    weatherArray.append(WeatherDayModel(time: weather.dt_txt, temp: Int(weather.main.temp), icon: icon, day: day))
+                                }
+                            }
+                            completion(weatherArray)
+                        } catch {
+                            print("ERROR parsing JSON - \(error)")
+                        }
                     }
                 }
             }
-            Urls.updateWeatherUrl()
-            task.resume()
+            .resume()
         }
     }
     
-    static func parseJSONforForcasts(data: Data) {
-        let decoder = JSONDecoder()
-        
-        do {
-            let decodedData = try decoder.decode(WeatherModelForFiveDays.self, from: data)
-            let arrayOfTemps = decodedData.list
-            for weather in arrayOfTemps {
-                if weather.dt_txt.dropFirst(11).prefix(13) == "15:00:00" {
-                    let icon = chooseIconForWeather(id: weather.weather[0].id)
-                    WeatherArray.weatherArray.append(WeatherModelClass(time: weather.dt_txt, temp: Int(weather.main.temp), icon: icon, day:CurrentDayValue.day!))
-                }
-            }
-        } catch {
-            print("ERROR parsing JSON - \(error)")
-        }
+    static func getDate(date: String) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.timeZone = TimeZone.current
+        dateFormatter.locale = Locale.current
+        return dateFormatter.date(from: date)
     }
     
-   static private func chooseIconForWeather(id: Int) -> String {
+    static func getDayOfWeek(date: String) -> String {
+        let day = String(getDate(date: date)!.dayOfWeek()!.prefix(3))
+        return day
+    }
+    
+    static private func chooseIconForWeather(id: Int) -> String {
         var icon = ""
         switch id {
         case 200...232: icon = "cloud.bolt"
@@ -68,4 +71,15 @@ struct WeatherManagerForFive {
         }
         return icon
     }
+    
+    static func configureURL(city: String? = nil, lon: Double? = nil, lat: Double? = nil) -> URL? {
+        var urlString = city == nil ?
+        Urls.weatherUrlForcastWithLocation + "lat=\(lat!)&lon=\(lon!)" + Identifiers.apiKey :
+        Urls.weatherForcast + "q=\(city!)" + Identifiers.apiKey
+        let url = URL(string: urlString)
+        return url
+    }
+    
 }
+
+

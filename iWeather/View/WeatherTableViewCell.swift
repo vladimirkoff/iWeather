@@ -9,6 +9,7 @@ import UIKit
 
 class WeatherTableViewCell: UITableViewCell {
     //MARK: - Properties
+    
     @IBOutlet var backGround: UIView!
     @IBOutlet var otherWeatherParametersDescription: UILabel!
     @IBOutlet var otherWeatherParametersIcon: UIImageView!
@@ -20,6 +21,7 @@ class WeatherTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        tempLabel.translatesAutoresizingMaskIntoConstraints = false
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {

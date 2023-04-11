@@ -46,41 +46,11 @@ struct WeatherParametersForCurrent {
     }
 }
 
-struct CityList {
-    static var cityList = [City]()
-}
 
-class WeatherModelClass {
-    var time: String
-    var temp: Int
-    var icon: String
-    var day: Int
-    
-    init(time: String, temp: Int, icon: String, day: Int) {
-        self.time = time
-        self.temp = temp
-        self.icon = icon
-        self.day = day
-    }
-}
 
-struct WeatherArray {
-    static var weatherArray = [WeatherModelClass]()
-    
-    static func updateWeatherArray() {
-        weatherArray.removeAll()
-    }
-}
 
-struct DaysArray {
-    static let daysArray = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-}
 
-struct CurrentDayValue {
-    static var day: Int?
-}
 
-struct LonAndLat {
-    static var lon: Double?
-    static var lat: Double?
-}
+
+
+

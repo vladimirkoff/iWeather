@@ -8,14 +8,14 @@
 import UIKit
 import CoreData
 import SwipeCellKit
+import CoreLocation
 
 class SearchViewController: UIViewController {
     
-    var cityName: String?
-    
-   var isForCurrent = true
+    //MARK: - Properties
     
     
+    @IBOutlet weak var locationButton: UIButton!
     @IBOutlet weak var searchButton: UIButton!
     @IBOutlet var moonImage: UIImageView!
     @IBOutlet var sunImage: UIImageView!
@@ -25,16 +25,29 @@ class SearchViewController: UIViewController {
     @IBOutlet var backGround: UIView!
     @IBOutlet var tableViewBackCol: UITableView!
     
+    var cityName: String?
+    
+    var isForCurrent = true
+    
+    let locationManager = CLLocationManager()
+    
     let defaults = UserDefaults.standard
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-   
+    
     
     
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        locationButton.isEnabled = false
+        locationManager.delegate = self
+        locationManager.requestLocation()
+        
+        DispatchQueue.main.async {
+            self.locationManager.requestWhenInUseAuthorization()
+        }
+        
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        CurrentDayManager.performRequestForCurrentInfo()
         loadItems()
         configureUI()
         configureTableView()
@@ -45,6 +58,8 @@ class SearchViewController: UIViewController {
     func configureUI() {
         searchField.delegate = self
         searchButton.setTitle("", for: .normal)
+        
+        locationButton.setTitle("", for: .normal)
         
         Tracker.mode = defaults.bool(forKey: "mode")
         tableViewBackCol.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
@@ -96,7 +111,7 @@ class SearchViewController: UIViewController {
         Tracker.isForCurrent = true
         performSegue(withIdentifier: Identifiers.loadingSegue, sender: self)
     }
-
+    
     //MARK: - Segue
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -203,6 +218,8 @@ extension SearchViewController {
     }
 }
 
+//MARK: - UITextFieldDelegate
+
 extension SearchViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         searchWeather()
@@ -228,7 +245,6 @@ extension SearchViewController {
         }
         
         cityName = cityString.trimmingCharacters(in: .whitespaces).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "-", with: "%20")
-        print(cityName)  // New%20York
         Tracker.isForCurrent = false
         performSegue(withIdentifier: Identifiers.loadingSegue, sender: self)
     }
@@ -246,3 +262,24 @@ extension SearchViewController {
     }
 }
 
+//MARK: - CLLocationManagerDelegate
+
+extension SearchViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        DispatchQueue.main.async {
+            if let lon = locations.last?.coordinate.longitude , let lat = locations.last?.coordinate.latitude {
+                //                WeatherManager.fetchWeatherForCurrentLocation(lon: lon, lat: lat)
+                //                WeatherManagerForFive.fetchWeatherForForcast(lon: lon, lat: lat)
+                self.locationButton.isEnabled = true
+                LonAndLat.lat = lat
+                LonAndLat.lon = lon
+            } else {
+                print("ERROR")
+            }
+        }
+    }
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("ERROR GETTING LOCATION")
+    }
+    
+}

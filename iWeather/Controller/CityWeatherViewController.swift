@@ -10,20 +10,20 @@ import UIKit
 class CityWeatherViewController: UIViewController {
     //MARK: - Properties
     
-//    private var weatherArray2: [WeatherModelClass]?
-    
     @IBOutlet var tableViewBackCol: UITableView!
     @IBOutlet var backGround: UIView!
     @IBOutlet weak var cityName: UILabel!
     @IBOutlet weak var generalTemp: UILabel!
-        
-    var params: WeatherParametersForCurrent? 
-    
-    @IBOutlet var backButton: UIButton!
     @IBOutlet var minLabel: UILabel!
     @IBOutlet var maxLabel: UILabel!
     @IBOutlet weak var mainDescription: UILabel!
     @IBOutlet weak var tableView: UITableView!
+    
+    private var weatherArray2: [WeatherDayModel]? {
+        didSet { tableView.reloadData() }
+    }
+    
+    var params: WeatherParametersForCurrent?
     
     let weatherManager = WeatherManager()
     
@@ -33,23 +33,31 @@ class CityWeatherViewController: UIViewController {
         super.viewDidLoad()
         configureUI()
         configureTableView()
+        
+        if Tracker.isForCurrent {
+            fetchWeatherForFiveDays(lat: LonAndLat.lat , lon: LonAndLat.lon)
+        } else {
+            fetchWeatherForFiveDays(city: params!.cityName)
+        }
     }
     
+    //MARK: - API
     
-    
-    func fetchWeatherForFiveDays(city: String, completion: @escaping([WeatherModelClass]) -> ()) {
- WeatherManagerForFive.fetchWeatherForForcast(city: city)
+    func fetchWeatherForFiveDays(city: String? = nil, lat: Double? = nil, lon: Double? = nil) {
+        if let city = city {
+            WeatherManagerForFive.fetchWeatherForecast(city: city) { weatherArray in
+                self.weatherArray2 = weatherArray
+            }
+        } else {
+            WeatherManagerForFive.fetchWeatherForecast(lon: lon, lat: lat) { weatherArray in
+                self.weatherArray2 = weatherArray
+            }
+        }
     }
-    
-    
-    
-    
-    
     
     //MARK: - Helpers
     
     func configureUI() {
-        backButton.setTitle("", for: .normal)
         guard let params = self.params else { return }
         
         tableViewBackCol.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
@@ -72,13 +80,13 @@ class CityWeatherViewController: UIViewController {
     
     //MARK: - Actions
     
-    @IBAction func goBackButtonPressed(_ sender: UIButton) {
-        WeatherArray.updateWeatherArray()
+    @IBAction func backButtonPressed(_ sender: UIBarButtonItem) {
         performSegue(withIdentifier: Identifiers.goBackFromWeather, sender: self)
     }
+    
 }
 
-//MARK: - TableView methods
+//MARK: - UITableViewDelegate & DataSource
 
 extension CityWeatherViewController: UITableViewDelegate, UITableViewDataSource {
     
@@ -87,46 +95,42 @@ extension CityWeatherViewController: UITableViewDelegate, UITableViewDataSource 
         cell.dayLabel.textColor = .white
         cell.tempLabel.textColor = .white
         
-        switch indexPath.row {
-        case 0:
-            cell.dayLabel.text = DaysArray.daysArray[Tracker.count]
-            Tracker.count += 1
-        case 1:
-            cell.dayLabel.text = DaysArray.daysArray[Tracker.count]
-            Tracker.count += 1
-        case 2:
-            cell.dayLabel.text = DaysArray.daysArray[Tracker.count]
-            Tracker.count += 1
-        case 3:
-            cell.dayLabel.text = DaysArray.daysArray[Tracker.count]
-            Tracker.count += 1
-        case 4:
-            cell.dayLabel.text = DaysArray.daysArray[Tracker.count]
-            Tracker.count += 1
-        default:
-            cell.dayLabel.text = DaysArray.daysArray[Tracker.count]
-        }
-        print(WeatherArray.weatherArray)
-        if let params = params {
-            if indexPath.row == 5 {
-                createCellForAdditionalParameters(cell: cell, imageName: "humidity.fill", description: "Humidity")
-                cell.tempLabel.text = "\(params.humidity)%"
-            } else if indexPath.row == 6 {
-                createCellForAdditionalParameters(cell: cell, imageName: "eye.fill", description: "Visibility")
-                cell.tempLabel.text = "\(params.visibility)m"
-            } else if indexPath.row == 7 {
-                createCellForAdditionalParameters(cell: cell, imageName: "thermometer.low", description: "Feels like")
-                cell.tempLabel.text = "\(params.feels_like)°"
-            } else if indexPath.row == 8 {
-                createCellForAdditionalParameters(cell: cell, imageName: "wind", description: "Wind speed")
-                cell.tempLabel.text = "\(params.speed)km/h"
-            } else {
-                cell.otherWeatherParametersDescription.text = ""
-                cell.tempLabel.text = "\(WeatherArray.weatherArray[0].temp)°"
-                cell.weatherImage.image = UIImage(systemName: WeatherArray.weatherArray[indexPath.row].icon)
+        if let weatherArray = weatherArray2 {
+            switch indexPath.row {
+            case 0:
+                cell.dayLabel.text = weatherArray[indexPath.row].day
+            case 1:
+                cell.dayLabel.text = weatherArray[indexPath.row].day
+            case 2:
+                cell.dayLabel.text = weatherArray[indexPath.row].day
+            case 3:
+                cell.dayLabel.text = weatherArray[indexPath.row].day
+            case 4:
+                cell.dayLabel.text = weatherArray[indexPath.row].day
+            default:
+                cell.dayLabel.text = "Mon"         }
+            
+            if let params = params {
+                if indexPath.row == 5 {
+                    createCellForAdditionalParameters(cell: cell, imageName: "humidity.fill", description: "Humidity")
+                    cell.tempLabel.text = "\(params.humidity)%"
+                } else if indexPath.row == 6 {
+                    createCellForAdditionalParameters(cell: cell, imageName: "eye.fill", description: "Visibility")
+                    cell.tempLabel.text = "\(params.visibility)m"
+                } else if indexPath.row == 7 {
+                    createCellForAdditionalParameters(cell: cell, imageName: "thermometer.low", description: "Feels like")
+                    cell.tempLabel.text = "\(params.feels_like)°"
+                } else if indexPath.row == 8 {
+                    createCellForAdditionalParameters(cell: cell, imageName: "wind", description: "Wind speed")
+                    cell.tempLabel.text = "\(params.speed)km/h"
+                } else {
+                    cell.otherWeatherParametersDescription.text = ""
+                    cell.tempLabel.text = "\(weatherArray[indexPath.row].temp)°"
+                    cell.weatherImage.image = UIImage(systemName: weatherArray[indexPath.row].icon)
+                }
             }
         }
-
+        
         return cell
     }
     

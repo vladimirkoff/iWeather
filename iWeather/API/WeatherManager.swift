@@ -13,27 +13,24 @@ protocol WeatherManagerDelegate {
 
 struct WeatherManager {
     
-   static var delegate: WeatherManagerDelegate?
+    static var delegate: WeatherManagerDelegate?
     
-    static func fetchWeather(city: String) {
-        Urls.currentWeatherUrl += "&q=\(city)"
-        performRequest(cityName: city)
-    }
-    
-    static func fetchWeatherForCurrentLocation(lon: Double, lat: Double) {
-        Urls.weatherForCurrentLocation += "lon=\(lon)&lat=\(lat)&appid=19d05a5ed37fa14c551db44956ae91aa"
-        print(Urls.weatherForCurrentLocation)
-        performRequest(lon: lon, lat: lat)
+    static func configureURL(lon: Double? = nil, lat: Double? = nil, cityName: String? = nil) -> URL? {
+        var urlString = ""
+        if let cityName = cityName {
+            urlString = Urls.currentWeatherUrl + "&q=\(cityName)"
+        } else {
+            urlString = Urls.weatherForCurrentLocation + "lon=\(lon)&lat=\(lat)&appid=19d05a5ed37fa14c551db44956ae91aa"
+        }
+        return URL(string: urlString)
     }
     
     static func performRequest(lon: Double? = nil, lat: Double? = nil, cityName: String? = nil) {
-        var currentUrl = ""
         
-        currentUrl = cityName == nil ? Urls.weatherForCurrentLocation : Urls.currentWeatherUrl
+        let url = cityName == nil ? configureURL(lon: lon, lat: lat) : configureURL(cityName: cityName)
         
-        if let url = URL(string: currentUrl) {
-            let session = URLSession(configuration: .default)
-            let task = session.dataTask(with: url) { data, response, error in
+        if let url = url {
+            URLSession.shared.dataTask(with: url) { data, response, error in
                 if let e = error {
                     print("Error performing request - \(e)")
                     DispatchQueue.main.async {
@@ -46,21 +43,31 @@ struct WeatherManager {
                     }
                 }
             }
-            task.resume()
-            Urls.updateWeatherUrl()
+            .resume()
         }
     }
     
     static func parseJSON(data: Data, cityName: String? = nil) {
         let decoder = JSONDecoder()
- 
+        
         do {
             let decodedData = try decoder.decode(WeatherModel.self, from: data)
-           
-            DispatchQueue.main.async {
-                let weatherParameters = WeatherParametersForCurrent(description: decodedData.weather[0].description, cityName: decodedData.name, humidity: decodedData.main.humidity, visibility: decodedData.visibility, country: decodedData.sys.country, speed: decodedData.wind.speed, temp: decodedData.main.temp, min: Int(decodedData.main.temp_min), max: Int(decodedData.main.temp_max), feels_like: Int(decodedData.main.feels_like), pressure: decodedData.main.pressure)
-            }
             
+            let cityName = decodedData.name
+            let description = decodedData.weather[0].description
+            let humidity = decodedData.main.humidity
+            let visibility = decodedData.visibility
+            let speed = decodedData.wind.speed
+            let temp = decodedData.main.temp
+            let country = decodedData.sys.country // refactor
+            let pressure = decodedData.main.pressure
+            let feels_like = Int(decodedData.main.feels_like)
+            let max = Int(decodedData.main.temp_max)
+            let min = Int(decodedData.main.temp_min)
+            
+            DispatchQueue.main.async {
+                let weatherParameters = WeatherParametersForCurrent(description: description, cityName: cityName, humidity: humidity, visibility: visibility, country: country, speed: speed, temp: temp, min: min, max: max, feels_like: feels_like, pressure: pressure)
+            }
         } catch {
             print("Error parsing JSON - \(error)")
             DispatchQueue.main.async {
@@ -68,4 +75,5 @@ struct WeatherManager {
             }
         }
     }
+    
 }
