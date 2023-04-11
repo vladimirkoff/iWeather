@@ -14,3 +14,10 @@ extension Date {
         return dateFormatter.string(from: self).capitalized
     }
 }
+
+extension String {
+    func formatCityName() -> String {
+        return self.replacingOccurrences(of: "-", with: "%20")
+            .replacingOccurrences(of: " ", with: "%20")
+    }
+}

@@ -21,13 +21,11 @@ class WeatherTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
         weatherImage.isHidden = true
         dayLabel.isHidden = true
         tempLabel.isHidden = true
         otherWeatherParametersIcon.isHidden = true
         otherWeatherParametersDescription.isHidden = true
-        
     }
     
     override func awakeFromNib() {

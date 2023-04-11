@@ -19,7 +19,7 @@ class CityWeatherViewController: UIViewController {
     @IBOutlet weak var mainDescription: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
-    private var weatherArray2: [WeatherDayModel]? {
+    private var weatherArray: [WeatherDayModel]? {
         didSet { tableView.reloadData() }
     }
     
@@ -37,7 +37,8 @@ class CityWeatherViewController: UIViewController {
         if Tracker.isForCurrent {
             fetchWeatherForFiveDays(lat: LonAndLat.lat , lon: LonAndLat.lon)
         } else {
-            fetchWeatherForFiveDays(city: params!.cityName)
+            let cityName = params!.cityName.formatCityName()
+            fetchWeatherForFiveDays(city: cityName)
         }
     }
     
@@ -46,11 +47,11 @@ class CityWeatherViewController: UIViewController {
     func fetchWeatherForFiveDays(city: String? = nil, lat: Double? = nil, lon: Double? = nil) {
         if let city = city {
             WeatherManagerForFive.fetchWeatherForecast(city: city) { weatherArray in
-                self.weatherArray2 = weatherArray
+                self.weatherArray = weatherArray
             }
         } else {
             WeatherManagerForFive.fetchWeatherForecast(lon: lon, lat: lat) { weatherArray in
-                self.weatherArray2 = weatherArray
+                self.weatherArray = weatherArray
             }
         }
     }
@@ -112,11 +113,12 @@ extension CityWeatherViewController: UITableViewDelegate, UITableViewDataSource 
         cell.dayLabel.textColor = .white
         cell.tempLabel.textColor = .white
         
-        if let weatherArray = weatherArray2 {
+        if let weatherArray = weatherArray {
             switch indexPath.row {
             case 0:
                 configureTempCells(cell: cell)
                 cell.dayLabel.text = weatherArray[indexPath.row].day
+                
             case 1:
                 configureTempCells(cell: cell)
                 cell.dayLabel.text = weatherArray[indexPath.row].day
@@ -162,7 +164,4 @@ extension CityWeatherViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 9
     }
-    
-
-    
 }

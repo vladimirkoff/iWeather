@@ -76,6 +76,7 @@ struct WeatherManagerForFive {
         var urlString = city == nil ?
         Urls.weatherUrlForcastWithLocation + "lat=\(lat!)&lon=\(lon!)" + Identifiers.apiKey :
         Urls.weatherForcast + "q=\(city!)" + Identifiers.apiKey
+        print(urlString)
         let url = URL(string: urlString)
         return url
     }
