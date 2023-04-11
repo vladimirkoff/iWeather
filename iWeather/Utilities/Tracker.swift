@@ -19,7 +19,7 @@ struct Tracker {
             }
         }
     }
-    static var isForCurrent = false
+    static var isForCurrent = true
 }
 
 

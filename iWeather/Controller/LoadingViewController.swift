@@ -31,6 +31,18 @@ class LoadingViewController: UIViewController {
     
     //MARK: - Lifecycle
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let lat = LonAndLat.lat, let lon = LonAndLat.lon {
+            WeatherManager.fetchWeatherForCurrentLocation(lon: lon, lat: lat)
+            WeatherManagerForFive.fetchWeatherForForcast(lon: lon, lat: lat)
+        } else if Tracker.isForCurrent {
+            locationManager.requestLocation()
+        }
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
@@ -42,15 +54,6 @@ class LoadingViewController: UIViewController {
             self.locationManager.requestWhenInUseAuthorization()
         }
         
-       
-        if let lat = LonAndLat.lat, let lon = LonAndLat.lon {
-            print("Here")
-            WeatherManager.fetchWeatherForCurrentLocation(lon: lon, lat: lat)
-            WeatherManagerForFive.fetchWeatherForForcast(lon: lon, lat: lat)
-        }
-//        else {
-//            locationManager.requestLocation()
-//        }
     }
     
     
@@ -133,10 +136,6 @@ extension LoadingViewController: WeatherParametersDelegate {
         let destinationVC = segue.destination as! CityWeatherViewController
         destinationVC.params = params
     }
-    
-    
-    
-    
     
     func checkIfCityInDB(cityName: String) {
         for city in CityList.cityList {
