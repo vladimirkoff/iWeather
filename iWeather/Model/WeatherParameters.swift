@@ -9,11 +9,11 @@ import Foundation
 import CoreData
 
 protocol WeatherParametersDelegate {
-    func hideLoading(params: WeatherParametersForCurrent)
+    func hideLoading(params: WeatherParameters)
 }
 
 
-struct WeatherParametersForCurrent {
+struct WeatherParameters {
     
     static var delegate: WeatherParametersDelegate?
     
@@ -42,7 +42,7 @@ struct WeatherParametersForCurrent {
         self.feels_like = feels_like
         self.pressure = pressure
         
-        WeatherParametersForCurrent.delegate?.hideLoading(params: self)
+        WeatherParameters.delegate?.hideLoading(params: self)
     }
 }
 

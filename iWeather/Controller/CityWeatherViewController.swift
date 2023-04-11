@@ -23,7 +23,7 @@ class CityWeatherViewController: UIViewController {
         didSet { tableView.reloadData() }
     }
     
-    var params: WeatherParametersForCurrent?
+    var params: WeatherParameters?
     
     let weatherManager = WeatherManager()
     
@@ -73,17 +73,34 @@ class CityWeatherViewController: UIViewController {
     func configureTableView() {
         tableView.delegate = self
         tableView.dataSource = self
-        
         tableView.register(UINib(nibName: "WeatherTableViewCell", bundle: nil), forCellReuseIdentifier: Identifiers.weatherCell)
+    }
+    
+    //MARK: - TableView helpers
+    
+    func createCellForAdditionalParameters(cell: WeatherTableViewCell, imageName: String, description: String) {
+        cell.dayLabel.isHidden = true
+        cell.otherWeatherParametersIcon.isHidden = false
+        cell.otherWeatherParametersDescription.isHidden = false
+        cell.weatherImage.isHidden = true
+        cell.otherWeatherParametersDescription.textColor = .white
+        cell.otherWeatherParametersDescription.text = description
+        cell.otherWeatherParametersIcon.image = UIImage(systemName: imageName)
+    }
+    
+    
+    func configureTempCells(cell: WeatherTableViewCell) {
+        cell.dayLabel.isHidden = false
+        cell.tempLabel.isHidden = false
+        cell.weatherImage.isHidden = false
     }
     
     
     //MARK: - Actions
     
-    @IBAction func backButtonPressed(_ sender: UIBarButtonItem) {
+    @IBAction func backButtonPressed(_ sender: UIButton) {
         performSegue(withIdentifier: Identifiers.goBackFromWeather, sender: self)
     }
-    
 }
 
 //MARK: - UITableViewDelegate & DataSource
@@ -98,17 +115,25 @@ extension CityWeatherViewController: UITableViewDelegate, UITableViewDataSource 
         if let weatherArray = weatherArray2 {
             switch indexPath.row {
             case 0:
+                configureTempCells(cell: cell)
                 cell.dayLabel.text = weatherArray[indexPath.row].day
             case 1:
+                configureTempCells(cell: cell)
                 cell.dayLabel.text = weatherArray[indexPath.row].day
             case 2:
+                configureTempCells(cell: cell)
                 cell.dayLabel.text = weatherArray[indexPath.row].day
             case 3:
+                configureTempCells(cell: cell)
                 cell.dayLabel.text = weatherArray[indexPath.row].day
             case 4:
+                configureTempCells(cell: cell)
                 cell.dayLabel.text = weatherArray[indexPath.row].day
             default:
-                cell.dayLabel.text = "Mon"         }
+                configureTempCells(cell: cell)
+                cell.dayLabel.text = "Mon"
+                
+            }
             
             if let params = params {
                 if indexPath.row == 5 {
@@ -138,10 +163,6 @@ extension CityWeatherViewController: UITableViewDelegate, UITableViewDataSource 
         return 9
     }
     
-    func createCellForAdditionalParameters(cell: WeatherTableViewCell, imageName: String, description: String) {
-        cell.dayLabel.text = ""
-        cell.otherWeatherParametersDescription.textColor = .white
-        cell.otherWeatherParametersDescription.text = description
-        cell.otherWeatherParametersIcon.image = UIImage(systemName: imageName)
-    }
+
+    
 }

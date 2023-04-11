@@ -22,7 +22,7 @@ class LoadingViewController: UIViewController {
     
     var tracker: Bool?
     
-    var params: WeatherParametersForCurrent?
+    var params: WeatherParameters?
     
     //MARK: - Lifecycle
     
@@ -39,7 +39,7 @@ class LoadingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
-        WeatherParametersForCurrent.delegate = self
+        WeatherParameters.delegate = self
         WeatherManager.delegate = self
     }
     
@@ -96,7 +96,7 @@ extension LoadingViewController: WeatherManagerDelegate {
 
 extension LoadingViewController: WeatherParametersDelegate {
     
-    func hideLoading(params: WeatherParametersForCurrent) {
+    func hideLoading(params: WeatherParameters) {
         self.params = params
         checkIfCityInDB(cityName: params.cityName)
         if cityName != nil {

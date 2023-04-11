@@ -66,7 +66,7 @@ struct WeatherManager {
             let min = Int(decodedData.main.temp_min)
             
             DispatchQueue.main.async {
-                let weatherParameters = WeatherParametersForCurrent(description: description, cityName: cityName, humidity: humidity, visibility: visibility, country: country, speed: speed, temp: temp, min: min, max: max, feels_like: feels_like, pressure: pressure)
+                let weatherParameters = WeatherParameters(description: description, cityName: cityName, humidity: humidity, visibility: visibility, country: country, speed: speed, temp: temp, min: min, max: max, feels_like: feels_like, pressure: pressure)
             }
         } catch {
             print("Error parsing JSON - \(error)")

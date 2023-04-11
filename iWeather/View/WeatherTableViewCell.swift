@@ -19,6 +19,17 @@ class WeatherTableViewCell: UITableViewCell {
     
     //MARK: - Lifecycle
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        weatherImage.isHidden = true
+        dayLabel.isHidden = true
+        tempLabel.isHidden = true
+        otherWeatherParametersIcon.isHidden = true
+        otherWeatherParametersDescription.isHidden = true
+        
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         tempLabel.translatesAutoresizingMaskIntoConstraints = false
