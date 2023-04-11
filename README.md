@@ -20,7 +20,7 @@
 1. Clone this repository
 
 ```bash
-git clone https://github.com/vladimirkoff/InstagramClone.git
+git clone https://github.com/vladimirkoff/iWeather-IOS.git
 ```
 
 
