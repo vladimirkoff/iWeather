@@ -35,11 +35,11 @@ git clone https://github.com/vladimirkoff/InstagramClone.git
 | ------------- | ------------- | 
 |![Simulator Screen Shot - iPhone 14 Pro - 2023-04-11 at 18 51 12](https://user-images.githubusercontent.com/115025494/231219534-6ee50461-2ab0-4756-9b64-880154efb8e1.png) |![Simulator Screen Shot - iPhone 14 Pro - 2023-04-11 at 18 51 14](https://user-images.githubusercontent.com/115025494/231219748-e8a3ef4f-f4ed-4572-9a6a-b9607e3da287.png) | 
 
-###  Your posts
+###  Check weather
 
-| Pick an image  | Use filters | Create post |
+| For specific city | For your location |
 | ------------- | ------------- | ------------- |
-|![Simulator Screen Shot - iPhone 14 Pro - 2023-04-05 at 16 34 04](https://user-images.githubusercontent.com/115025494/230096677-a00934a6-cc7e-4372-b77e-01198ec4425f.png) | ![Simulator Screen Shot - iPhone 14 Pro - 2023-04-05 at 16 36 47](https://user-images.githubusercontent.com/115025494/230097214-87abef99-3fc0-43c7-9f64-40d2bda777e5.png)| ![Simulator Screen Shot - iPhone 14 Pro - 2023-04-04 at 19 17 41](https://user-images.githubusercontent.com/115025494/229862268-2fa3cfda-c556-41d0-8860-ebc92904c5df.png)|
+|![Simulator Screen Shot - iPhone 14 Pro - 2023-04-05 at 16 34 04](https://user-images.githubusercontent.com/115025494/230096677-a00934a6-cc7e-4372-b77e-01198ec4425f.png) | ![Simulator Screen Shot - iPhone 14 Pro - 2023-04-05 at 16 36 47](https://user-images.githubusercontent.com/115025494/230097214-87abef99-3fc0-43c7-9f64-40d2bda777e5.png)| 
 
 ###  Profile
 
