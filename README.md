@@ -16,11 +16,13 @@
 
 
 
+
 1. Clone this repository
 
 ```bash
 git clone https://github.com/vladimirkoff/InstagramClone.git
 ```
+
 
 
 2. Open iWeather.xcworkspace in Xcode
@@ -35,7 +37,7 @@ git clone https://github.com/vladimirkoff/InstagramClone.git
 
 | Dark  | Light |
 | ------------- | ------------- | 
-|![Simulator Screen Shot - iPhone 14 Pro - 2023-04-11 at 18 51 12](https://user-images.githubusercontent.com/115025494/231219534-6ee50461-2ab0-4756-9b64-880154efb8e1.png) |![Simulator Screen Shot - iPhone 14 Pro - 2023-04-11 at 18 51 14](https://user-images.githubusercontent.com/115025494/231219748-e8a3ef4f-f4ed-4572-9a6a-b9607e3da287.png) | 
+|![Simulator Screen Shot - iPhone 14 Pro - 2023-04-11 at 18 58 12](https://user-images.githubusercontent.com/115025494/231221194-17fadc5c-405c-4d21-b4ac-3c3ae0f0f2aa.png) |![Simulator Screen Shot - iPhone 14 Pro - 2023-04-11 at 18 58 13](https://user-images.githubusercontent.com/115025494/231221264-12862030-65a1-4228-8e73-12d936e2bf68.png)| 
 
 ###  Check weather
 
