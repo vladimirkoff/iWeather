@@ -14,10 +14,9 @@ struct WeatherManagerForFive {
         let url = configureURL(city: city, lon: lon, lat: lat )
         
         if let url = url {
-            
             URLSession.shared.dataTask(with: url) { data, response, error in
                 if let e = error {
-                    print("ERROR performing task - \(e)")
+                    print("ERROR performing task - \(e.localizedDescription)")
                     return
                 }
                 if let safeData = data {
@@ -73,11 +72,11 @@ struct WeatherManagerForFive {
     }
     
     static func configureURL(city: String? = nil, lon: Double? = nil, lat: Double? = nil) -> URL? {
-        var urlString = city == nil ?
+        let urlString = city == nil ?
         Urls.weatherUrlForcastWithLocation + "lat=\(lat!)&lon=\(lon!)" + Identifiers.apiKey :
         Urls.weatherForcast + "q=\(city!)" + Identifiers.apiKey
-        print(urlString)
         let url = URL(string: urlString)
+        print(urlString)
         return url
     }
     

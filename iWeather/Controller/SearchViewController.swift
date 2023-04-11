@@ -249,8 +249,7 @@ extension SearchViewController {
         performSegue(withIdentifier: Identifiers.loadingSegue, sender: self)
     }
     
-    
-    
+
     func checkIfStringValid(cityString: String) -> Bool {
         var isValid = true
         for char in cityString {
@@ -268,11 +267,9 @@ extension SearchViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         DispatchQueue.main.async {
             if let lon = locations.last?.coordinate.longitude , let lat = locations.last?.coordinate.latitude {
-                //                WeatherManager.fetchWeatherForCurrentLocation(lon: lon, lat: lat)
-                //                WeatherManagerForFive.fetchWeatherForForcast(lon: lon, lat: lat)
-                self.locationButton.isEnabled = true
                 LonAndLat.lat = lat
                 LonAndLat.lon = lon
+                self.locationButton.isEnabled = true
             } else {
                 print("ERROR")
             }

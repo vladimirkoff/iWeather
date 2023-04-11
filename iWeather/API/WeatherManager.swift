@@ -18,9 +18,9 @@ struct WeatherManager {
     static func configureURL(lon: Double? = nil, lat: Double? = nil, cityName: String? = nil) -> URL? {
         var urlString = ""
         if let cityName = cityName {
-            urlString = Urls.currentWeatherUrl + "&q=\(cityName)"
+            urlString = Urls.currentWeatherUrl + "&q=\(cityName)&\(Identifiers.apiKey)"
         } else {
-            urlString = Urls.weatherForCurrentLocation + "lon=\(lon)&lat=\(lat)&appid=19d05a5ed37fa14c551db44956ae91aa"
+            urlString = Urls.weatherForCurrentLocation + "lon=\(lon!)&lat=\(lat!)&appid=\(Identifiers.apiKey)"
         }
         return URL(string: urlString)
     }
