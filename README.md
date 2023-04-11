@@ -14,6 +14,7 @@
 
 
 
+
 1. Clone this repository
 
 ```bash
@@ -32,7 +33,7 @@ git clone https://github.com/vladimirkoff/InstagramClone.git
 
 | Dark  | Light |
 | ------------- | ------------- | 
-|![Simulator Screen Shot - iPhone 14 Pro - 2023-04-11 at 18 51 12](https://user-images.githubusercontent.com/115025494/231219534-6ee50461-2ab0-4756-9b64-880154efb8e1.png) | ![Simulator Screen Shot - iPhone 14 Pro - 2023-04-05 at 17 01 47](https://user-images.githubusercontent.com/115025494/230104610-931cd29b-4f37-4df9-a550-5663e17e0cd2.png) | 
+|![Simulator Screen Shot - iPhone 14 Pro - 2023-04-11 at 18 51 12](https://user-images.githubusercontent.com/115025494/231219534-6ee50461-2ab0-4756-9b64-880154efb8e1.png) |![Simulator Screen Shot - iPhone 14 Pro - 2023-04-11 at 18 51 14](https://user-images.githubusercontent.com/115025494/231219748-e8a3ef4f-f4ed-4572-9a6a-b9607e3da287.png) | 
 
 ###  Your posts
 
