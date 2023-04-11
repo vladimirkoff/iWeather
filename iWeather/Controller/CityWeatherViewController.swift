@@ -10,17 +10,14 @@ import UIKit
 class CityWeatherViewController: UIViewController {
     //MARK: - Properties
     
-    private var weatherArray2: [WeatherModelClass]?
-    
+//    private var weatherArray2: [WeatherModelClass]?
     
     @IBOutlet var tableViewBackCol: UITableView!
     @IBOutlet var backGround: UIView!
     @IBOutlet weak var cityName: UILabel!
     @IBOutlet weak var generalTemp: UILabel!
-    
-    var cityname: String?
-    
-     var params: WeatherParametersForCurrent?
+        
+    var params: WeatherParametersForCurrent? 
     
     @IBOutlet var backButton: UIButton!
     @IBOutlet var minLabel: UILabel!
@@ -32,15 +29,22 @@ class CityWeatherViewController: UIViewController {
     
     //MARK: - Lifecycle
     
-
-    
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         configureTableView()
     }
+    
+    
+    
+    func fetchWeatherForFiveDays(city: String, completion: @escaping([WeatherModelClass]) -> ()) {
+ WeatherManagerForFive.fetchWeatherForForcast(city: city)
+    }
+    
+    
+    
+    
+    
     
     //MARK: - Helpers
     
@@ -51,7 +55,7 @@ class CityWeatherViewController: UIViewController {
         tableViewBackCol.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
         backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
         
-        cityName.text = cityname
+        cityName.text = params.cityName
         generalTemp.text! = "\(Int(params.temp))°"
         mainDescription.text! = String(params.description)
         maxLabel.text! = "H:\(params.max)"
@@ -65,11 +69,6 @@ class CityWeatherViewController: UIViewController {
         tableView.register(UINib(nibName: "WeatherTableViewCell", bundle: nil), forCellReuseIdentifier: Identifiers.weatherCell)
     }
     
-    //MARK: - API
-    
-    func fetchWeather() {
-        
-    }
     
     //MARK: - Actions
     
@@ -107,7 +106,7 @@ extension CityWeatherViewController: UITableViewDelegate, UITableViewDataSource 
         default:
             cell.dayLabel.text = DaysArray.daysArray[Tracker.count]
         }
-        
+        print(WeatherArray.weatherArray)
         if let params = params {
             if indexPath.row == 5 {
                 createCellForAdditionalParameters(cell: cell, imageName: "humidity.fill", description: "Humidity")
@@ -123,7 +122,7 @@ extension CityWeatherViewController: UITableViewDelegate, UITableViewDataSource 
                 cell.tempLabel.text = "\(params.speed)km/h"
             } else {
                 cell.otherWeatherParametersDescription.text = ""
-                cell.tempLabel.text = "\(WeatherArray.weatherArray[indexPath.row].temp)°"
+                cell.tempLabel.text = "\(WeatherArray.weatherArray[0].temp)°"
                 cell.weatherImage.image = UIImage(systemName: WeatherArray.weatherArray[indexPath.row].icon)
             }
         }

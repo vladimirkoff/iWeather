@@ -13,19 +13,20 @@ protocol WeatherManagerDelegate {
 
 struct WeatherManager {
     
-    var delegate: WeatherManagerDelegate?
+   static var delegate: WeatherManagerDelegate?
     
-    func fetchWeather(city: String) {
+    static func fetchWeather(city: String) {
         Urls.currentWeatherUrl += "&q=\(city)"
         performRequest(cityName: city)
     }
     
-    func fetchWeatherForCurrentLocation(lon: Double, lat: Double) {
+    static func fetchWeatherForCurrentLocation(lon: Double, lat: Double) {
         Urls.weatherForCurrentLocation += "lon=\(lon)&lat=\(lat)&appid=19d05a5ed37fa14c551db44956ae91aa"
+        print(Urls.weatherForCurrentLocation)
         performRequest(lon: lon, lat: lat)
     }
     
-    func performRequest(lon: Double? = nil, lat: Double? = nil, cityName: String? = nil) {
+    static func performRequest(lon: Double? = nil, lat: Double? = nil, cityName: String? = nil) {
         var currentUrl = ""
         
         currentUrl = cityName == nil ? Urls.weatherForCurrentLocation : Urls.currentWeatherUrl
@@ -50,22 +51,14 @@ struct WeatherManager {
         }
     }
     
-    func parseJSON(data: Data, cityName: String? = nil) {
+    static func parseJSON(data: Data, cityName: String? = nil) {
         let decoder = JSONDecoder()
  
         do {
             let decodedData = try decoder.decode(WeatherModel.self, from: data)
-            var city = ""
-            if let cityN = cityName {
-               city = cityN
-                
-            } else {
-                city = decodedData.name
-            }
            
-        
             DispatchQueue.main.async {
-                let weatherParameters = WeatherParametersForCurrent(description: decodedData.weather[0].description, cityName: city, humidity: decodedData.main.humidity, visibility: decodedData.visibility, country: decodedData.sys.country, speed: decodedData.wind.speed, temp: decodedData.main.temp, min: Int(decodedData.main.temp_min), max: Int(decodedData.main.temp_max), feels_like: Int(decodedData.main.feels_like), pressure: decodedData.main.pressure)
+                let weatherParameters = WeatherParametersForCurrent(description: decodedData.weather[0].description, cityName: decodedData.name, humidity: decodedData.main.humidity, visibility: decodedData.visibility, country: decodedData.sys.country, speed: decodedData.wind.speed, temp: decodedData.main.temp, min: Int(decodedData.main.temp_min), max: Int(decodedData.main.temp_max), feels_like: Int(decodedData.main.feels_like), pressure: decodedData.main.pressure)
             }
             
         } catch {

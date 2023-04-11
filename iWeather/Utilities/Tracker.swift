@@ -19,4 +19,8 @@ struct Tracker {
             }
         }
     }
+    static var isForCurrent = false
 }
+
+
+//"https://api.openweathermap.org/data/2.5/weather?&appid=19d05a5ed37fa14c551db44956ae91aa&units=metric&q=Kyiv"

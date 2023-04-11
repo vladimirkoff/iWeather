@@ -13,38 +13,49 @@ class LoadingViewController: UIViewController {
     
     @IBOutlet var backGround: UIView!
     
+    
+    var cityName: String?  {
+        didSet {
+            WeatherManagerForFive.fetchWeatherForForcast(city: cityName!)
+            WeatherManager.fetchWeather(city: cityName!)
+        }
+    } // New%20York
+    
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
-    var cityName: String?
-    var cityNameCopy: String?
     var tracker: Bool?
     
-    var weatherManager = WeatherManager()
     let locationManager = CLLocationManager()
-    let weatherManagerForFive = WeatherManagerForFive()
     
     var params: WeatherParametersForCurrent?
     
+    //MARK: - Lifecycle
+    
     override func viewDidLoad() {
-        WeatherParametersForCurrent.delegate = self
         super.viewDidLoad()
-        backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
+        configureUI()
+        WeatherParametersForCurrent.delegate = self
         locationManager.delegate = self
-        weatherManager.delegate = self
+        WeatherManager.delegate = self
+        
         DispatchQueue.main.async {
             self.locationManager.requestWhenInUseAuthorization()
         }
         
-        if cityName != nil {
-            self.weatherManager.fetchWeather(city: self.cityName!)
-        };
+       
         if let lat = LonAndLat.lat, let lon = LonAndLat.lon {
-            self.weatherManager.fetchWeatherForCurrentLocation(lon: lon, lat: lat)
-            self.weatherManagerForFive.fetchWeatherForForcast(lon: lon, lat: lat)
+            print("Here")
+            WeatherManager.fetchWeatherForCurrentLocation(lon: lon, lat: lat)
+            WeatherManagerForFive.fetchWeatherForForcast(lon: lon, lat: lat)
         }
-        else {
-            locationManager.requestLocation()
-        }
+//        else {
+//            locationManager.requestLocation()
+//        }
+    }
+    
+    
+    func configureUI() {
+        backGround.backgroundColor = Tracker.mode ? #colorLiteral(red: 0.2235294118, green: 0.2431372549, blue: 0.2745098039, alpha: 1) : #colorLiteral(red: 0, green: 0.6784313725, blue: 0.7098039216, alpha: 1)
     }
 }
 
@@ -83,8 +94,8 @@ extension LoadingViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         DispatchQueue.main.async {
             if let lon = locations.last?.coordinate.longitude , let lat = locations.last?.coordinate.latitude {
-                self.weatherManager.fetchWeatherForCurrentLocation(lon: lon, lat: lat)
-                self.weatherManagerForFive.fetchWeatherForForcast(lon: lon, lat: lat)
+                WeatherManager.fetchWeatherForCurrentLocation(lon: lon, lat: lat)
+                WeatherManagerForFive.fetchWeatherForForcast(lon: lon, lat: lat)
                 LonAndLat.lat = lat
                 LonAndLat.lon = lon
             } else {
@@ -99,8 +110,10 @@ extension LoadingViewController: CLLocationManagerDelegate {
 }
 
 extension LoadingViewController: WeatherParametersDelegate {
+    
     func hideLoading(params: WeatherParametersForCurrent) {
         self.params = params
+        checkIfCityInDB(cityName: params.cityName)
         if cityName != nil {
             if Tracker.tracker {
                 self.performSegue(withIdentifier: Identifiers.weatherSegue, sender: self)
@@ -119,6 +132,22 @@ extension LoadingViewController: WeatherParametersDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destinationVC = segue.destination as! CityWeatherViewController
         destinationVC.params = params
-        destinationVC.cityname = cityNameCopy
+    }
+    
+    
+    
+    
+    
+    func checkIfCityInDB(cityName: String) {
+        for city in CityList.cityList {
+            if city.name == cityName {
+                Tracker.tracker = true
+                break
+            } else {
+                Tracker.tracker = false
+            }
+        }
     }
 }
+
+

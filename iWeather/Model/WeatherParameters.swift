@@ -12,6 +12,7 @@ protocol WeatherParametersDelegate {
     func hideLoading(params: WeatherParametersForCurrent)
 }
 
+
 struct WeatherParametersForCurrent {
     
     static var delegate: WeatherParametersDelegate?
@@ -65,6 +66,7 @@ class WeatherModelClass {
 
 struct WeatherArray {
     static var weatherArray = [WeatherModelClass]()
+    
     static func updateWeatherArray() {
         weatherArray.removeAll()
     }

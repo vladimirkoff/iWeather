@@ -11,6 +11,11 @@ import SwipeCellKit
 
 class SearchViewController: UIViewController {
     
+    var cityName: String?
+    
+   var isForCurrent = true
+    
+    
     @IBOutlet weak var searchButton: UIButton!
     @IBOutlet var moonImage: UIImageView!
     @IBOutlet var sunImage: UIImageView!
@@ -22,20 +27,14 @@ class SearchViewController: UIViewController {
     
     let defaults = UserDefaults.standard
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    var cityName: String?
-    var cityNameCopy: String?
-    
-    let currentDayManager = CurrentDayManager()
-    let weatherManager = WeatherManager()
-    let weatherManagerForFive = WeatherManagerForFive()
+   
     
     
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        currentDayManager.performRequestForCurrentInfo()
+        CurrentDayManager.performRequestForCurrentInfo()
         loadItems()
         configureUI()
         configureTableView()
@@ -69,9 +68,6 @@ class SearchViewController: UIViewController {
         tableView.register(UINib(nibName: "CityCustomCell", bundle: nil), forCellReuseIdentifier: Identifiers.cityCell)
     }
     
-    //MARK: - API
-    
-    
     
     //MARK: - Actions
     
@@ -97,23 +93,18 @@ class SearchViewController: UIViewController {
     }
     
     @IBAction func locationButtonPressed(_ sender: UIButton) {
+        Tracker.isForCurrent = true
         performSegue(withIdentifier: Identifiers.loadingSegue, sender: self)
     }
-    
+
     //MARK: - Segue
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let destinationVC = segue.destination as! LoadingViewController
-        if cityName == nil {
-            return
-        } else {
-            self.weatherManagerForFive.fetchWeatherForForcast(city: cityName!)
-            print(cityNameCopy)
-            print(cityName)
-            destinationVC.cityNameCopy = cityNameCopy
+        if !Tracker.isForCurrent {
+            let destinationVC = segue.destination as! LoadingViewController
             destinationVC.cityName = cityName
             for city in CityList.cityList {
-                if city.name == cityNameCopy! {
+                if city.name == cityName!.replacingOccurrences(of: "%20", with: "-") {
                     Tracker.tracker = true
                     break
                 } else {
@@ -144,8 +135,8 @@ extension SearchViewController: SwipeTableViewCellDelegate, UITableViewDelegate,
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        cityNameCopy = CityList.cityList[indexPath.row].name!
-        cityName = CityList.cityList[indexPath.row].name?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "-", with: "%20")
+        Tracker.isForCurrent = false
+        cityName = CityList.cityList[indexPath.row].name!.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "-", with: "%20")
         performSegue(withIdentifier: Identifiers.loadingSegue, sender: self)
     }
     
@@ -223,20 +214,35 @@ extension SearchViewController: UITextFieldDelegate {
 
 extension SearchViewController {
     func searchWeather() {
-        if searchField.text! == "" {
+        guard !searchField.text!.isEmpty else {
             emptyFieldAlert()
             return
         }
+        
         let cityString = searchField.text!
+        
+        let isValid = checkIfStringValid(cityString: cityString)
+        if !isValid {
+            invalidSyntaxAlert()
+            return
+        }
+        
+        cityName = cityString.trimmingCharacters(in: .whitespaces).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "-", with: "%20")
+        print(cityName)  // New%20York
+        Tracker.isForCurrent = false
+        performSegue(withIdentifier: Identifiers.loadingSegue, sender: self)
+    }
+    
+    
+    
+    func checkIfStringValid(cityString: String) -> Bool {
+        var isValid = true
         for char in cityString {
             if Int(String(char)) != nil {
-                invalidSyntaxAlert()
-                return
+                isValid = false
             }
         }
-        cityNameCopy = cityString.replacingOccurrences(of: " ", with: "-")
-        cityName = cityString.trimmingCharacters(in: .whitespaces).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "-", with: "%20")
-        performSegue(withIdentifier: Identifiers.loadingSegue, sender: self)
+        return isValid
     }
 }
 

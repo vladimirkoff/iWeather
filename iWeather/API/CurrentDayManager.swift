@@ -8,7 +8,7 @@
 import Foundation
 
 struct CurrentDayManager {
-    func performRequestForCurrentInfo() {
+    static  func performRequestForCurrentInfo() {
         if let url = URL(string: Urls.urlForCurrentInfo) {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { data, response, error in
@@ -25,7 +25,7 @@ struct CurrentDayManager {
             task.resume()
         }
     }
-    func parseJSON(data: Data) -> Void {
+    static  func parseJSON(data: Data) -> Void {
         let decoder = JSONDecoder()
         do {
             let decodedData =  try decoder.decode(CurrentData.self, from: data)
