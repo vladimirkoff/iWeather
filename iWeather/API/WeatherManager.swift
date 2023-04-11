@@ -20,8 +20,9 @@ struct WeatherManager {
         if let cityName = cityName {
             urlString = Urls.currentWeatherUrl + "&q=\(cityName)&\(Identifiers.apiKey)"
         } else {
-            urlString = Urls.weatherForCurrentLocation + "lon=\(lon!)&lat=\(lat!)&appid=\(Identifiers.apiKey)"
+            urlString = Urls.weatherForCurrentLocation + "lon=\(lon!)&lat=\(lat!)\(Identifiers.apiKey)"
         }
+        print(urlString)
         return URL(string: urlString)
     }
     
